@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
-const HERO_IMAGE = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/38be53e1-d3f2-4b79-a02b-17106c6d4138.jpg";
-const VENUE_IMAGE = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/0fdbdb34-7e9b-4aa9-b4ed-c1ee9bd3ff58.jpg";
+const COUPLE_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/6cb1cb89-5198-4189-820e-d15a7f18eeef.jpg";
+const FLOWERS_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/a943f521-b3c3-4c22-97a1-c51206aca462.jpg";
+const DECO_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/084b148e-91cc-4610-8fb0-4a4f2e7c8767.jpg";
 
 const PLAYLIST = [
   { title: "Perfect", artist: "Ed Sheeran" },
@@ -13,13 +14,15 @@ const PLAYLIST = [
 ];
 
 const SCHEDULE = [
-  { time: "14:00", title: "Сбор гостей", desc: "Торжественная встреча и фотосессия" },
+  { time: "14:00", title: "Сбор гостей", desc: "Встреча и лёгкий фуршет" },
   { time: "15:00", title: "Церемония", desc: "Выездная регистрация брака" },
-  { time: "16:00", title: "Фуршет", desc: "Лёгкие закуски и шампанское в саду" },
+  { time: "16:00", title: "Фотосессия", desc: "Прогулка и шампанское" },
   { time: "17:30", title: "Банкет", desc: "Торжественный ужин и первый танец" },
   { time: "20:00", title: "Торт", desc: "Разрезание свадебного торта" },
   { time: "21:00", title: "Танцы", desc: "Живая музыка до полуночи" },
 ];
+
+const SECTIONS = ["Главная", "Детали", "RSVP", "Подарки", "Программа"];
 
 export default function Index() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,22 +37,21 @@ export default function Index() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = sectionRefs.current.indexOf(entry.target as HTMLElement);
-            if (index !== -1) setActiveSection(index);
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const idx = sectionRefs.current.indexOf(e.target as HTMLElement);
+            if (idx !== -1) setActiveSection(idx);
           }
         });
       },
       { threshold: 0.4 }
     );
-    sectionRefs.current.forEach((ref) => ref && observer.observe(ref));
+    sectionRefs.current.forEach((r) => r && observer.observe(r));
     return () => observer.disconnect();
   }, []);
 
-  const scrollTo = (index: number) => {
-    sectionRefs.current[index]?.scrollIntoView({ behavior: "smooth" });
-  };
+  const scrollTo = (i: number) =>
+    sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth" });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,11 +59,11 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--cream)" }}>
+    <div style={{ background: "var(--cream)", minHeight: "100vh" }}>
 
-      {/* Side Navigation */}
-      <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex-col gap-3 hidden md:flex">
-        {["Главная", "Детали", "RSVP", "Подарки", "Программа"].map((label, i) => (
+      {/* ── Side Nav ── */}
+      <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3">
+        {SECTIONS.map((label, i) => (
           <button
             key={i}
             onClick={() => scrollTo(i)}
@@ -71,286 +73,282 @@ export default function Index() {
         ))}
       </nav>
 
-      {/* Music Player */}
+      {/* ── Music Bar ── */}
       <div
-        className="music-player fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 px-6 py-3"
-        style={{
-          background: "rgba(248, 244, 238, 0.92)",
-          border: "1px solid var(--gold-light)",
-          boxShadow: "0 8px 40px rgba(201, 169, 110, 0.15)",
-        }}
+        className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-5 px-6 py-3"
+        style={{ background: "var(--cream)", borderTop: "1px solid rgba(26,23,16,0.12)" }}
       >
         <button
           onClick={() => setCurrentTrack((p) => (p - 1 + PLAYLIST.length) % PLAYLIST.length)}
-          style={{ color: "var(--stone)", cursor: "pointer", background: "none", border: "none" }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ink)", opacity: 0.45 }}
         >
-          <Icon name="SkipBack" size={14} />
+          <Icon name="SkipBack" size={13} />
         </button>
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="flex items-center justify-center w-8 h-8 transition-all"
           style={{
-            background: isPlaying ? "var(--gold)" : "transparent",
-            border: "1px solid var(--gold)",
-            color: isPlaying ? "var(--cream)" : "var(--gold)",
-            borderRadius: "50%",
-            cursor: "pointer",
+            width: "28px", height: "28px", borderRadius: "50%",
+            background: isPlaying ? "var(--ink)" : "transparent",
+            border: "1px solid var(--ink)",
+            color: isPlaying ? "var(--cream)" : "var(--ink)",
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "all 0.2s",
           }}
         >
-          <Icon name={isPlaying ? "Pause" : "Play"} size={12} />
+          <Icon name={isPlaying ? "Pause" : "Play"} size={11} />
         </button>
         <button
           onClick={() => setCurrentTrack((p) => (p + 1) % PLAYLIST.length)}
-          style={{ color: "var(--stone)", cursor: "pointer", background: "none", border: "none" }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ink)", opacity: 0.45 }}
         >
-          <Icon name="SkipForward" size={14} />
+          <Icon name="SkipForward" size={13} />
         </button>
-        <div className="text-xs" style={{ color: "var(--stone)", letterSpacing: "0.05em" }}>
-          <span style={{ color: "var(--charcoal)", fontWeight: 400 }}>{PLAYLIST[currentTrack].title}</span>
-          <span className="mx-1">·</span>
-          <span>{PLAYLIST[currentTrack].artist}</span>
-        </div>
-        <Icon name="Music2" size={12} style={{ color: "var(--gold-light)" } as React.CSSProperties} />
+        <span style={{ fontFamily: "Cormorant Garamond, serif", fontSize: "0.95rem", color: "var(--ink)", opacity: 0.55 }}>
+          {PLAYLIST[currentTrack].title}
+          <span style={{ opacity: 0.5 }}> — {PLAYLIST[currentTrack].artist}</span>
+        </span>
       </div>
 
-      {/* ─── HERO ─── */}
+      {/* ══════════════ HERO ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[0] = el; }}
-        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+        className="min-h-screen flex flex-col items-center justify-center relative"
+        style={{ paddingBottom: "4rem" }}
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${HERO_IMAGE})` }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, rgba(248,244,238,0.45) 0%, rgba(248,244,238,0.65) 60%, var(--cream) 100%)" }}
-        />
+        <div className="animate-float" style={{ marginBottom: "2rem", width: "220px" }}>
+          <img
+            src={COUPLE_IMG}
+            alt="Жених и невеста"
+            style={{ width: "100%", mixBlendMode: "multiply", opacity: 0.92 }}
+          />
+        </div>
 
-        <div className="relative z-10 text-center px-6 max-w-2xl mx-auto">
+        <div className="text-center px-8">
           <p
-            className="opacity-0-init animate-fade-in font-display italic mb-6"
-            style={{ color: "var(--gold)", fontSize: "1rem", letterSpacing: "0.15em", animationDelay: "0.2s", animationFillMode: "forwards" }}
+            className="animate-fade-in delay-0"
+            style={{
+              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+              fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase",
+              color: "var(--ink)", marginBottom: "1.5rem",
+            }}
           >
-            приглашают вас разделить их радость
+            с радостью приглашают вас
           </p>
 
           <h1
-            className="opacity-0-init animate-fade-up font-display mb-4"
+            className="animate-fade-up delay-1 font-display"
             style={{
-              fontSize: "clamp(3.5rem, 10vw, 7rem)",
-              fontWeight: 300,
-              color: "var(--charcoal)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              animationDelay: "0.4s",
-              animationFillMode: "forwards",
+              fontSize: "clamp(3.8rem, 11vw, 8rem)", fontWeight: 300,
+              lineHeight: 0.95, letterSpacing: "-0.03em",
+              color: "var(--ink)", marginBottom: "1.5rem",
             }}
           >
             Александр
             <br />
-            <span className="font-display italic" style={{ color: "var(--gold)", fontSize: "0.85em" }}>&amp;</span>
+            <span style={{ fontStyle: "italic", opacity: 0.4, fontSize: "0.5em", letterSpacing: "0.05em" }}>и</span>
             <br />
             Мария
           </h1>
 
-          <div
-            className="opacity-0-init animate-fade-in flex items-center justify-center gap-4 mb-8"
-            style={{ animationDelay: "0.8s", animationFillMode: "forwards" }}
-          >
-            <div style={{ height: "1px", width: "60px", background: "var(--gold-light)" }} />
-            <span className="font-display italic" style={{ color: "var(--stone)", fontSize: "1.1rem", letterSpacing: "0.1em" }}>
+          <div className="animate-fade-in delay-3" style={{ marginBottom: "0.75rem" }}>
+            <span style={{
+              fontFamily: "Cormorant Garamond, serif",
+              fontStyle: "italic", fontSize: "1.3rem",
+              color: "var(--ink)", opacity: 0.55,
+            }}>
               14 сентября 2024
             </span>
-            <div style={{ height: "1px", width: "60px", background: "var(--gold-light)" }} />
           </div>
 
           <p
-            className="opacity-0-init animate-fade-up"
+            className="animate-fade-in delay-4"
             style={{
-              color: "var(--stone)",
-              fontSize: "0.8rem",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              animationDelay: "1s",
-              animationFillMode: "forwards",
+              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+              fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase",
+              color: "var(--ink)", opacity: 0.45, marginBottom: "2.5rem",
             }}
           >
             Москва · Особняк «Белый зал»
           </p>
 
-          <div
-            className="opacity-0-init animate-fade-in mt-12"
-            style={{ animationDelay: "1.2s", animationFillMode: "forwards" }}
-          >
-            <button onClick={() => scrollTo(1)} className="btn-gold">
-              Подробнее
+          <div className="animate-fade-in delay-5">
+            <button onClick={() => scrollTo(1)} className="btn-sketch">
+              Открыть приглашение
             </button>
           </div>
         </div>
 
         <button
           onClick={() => scrollTo(1)}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
-          style={{ color: "var(--gold-light)", background: "none", border: "none", cursor: "pointer" }}
+          className="absolute animate-bounce"
+          style={{
+            bottom: "5rem", left: "50%", transform: "translateX(-50%)",
+            background: "none", border: "none", cursor: "pointer",
+            color: "var(--ink)", opacity: 0.25,
+          }}
         >
-          <Icon name="ChevronDown" size={20} />
+          <Icon name="ChevronDown" size={18} />
         </button>
       </section>
 
-      {/* ─── ДЕТАЛИ ─── */}
+      {/* ══════════════ ДЕТАЛИ ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[1] = el; }}
-        className="py-32 px-6"
+        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)" }}
       >
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-20">
-            <p className="ornament mb-3">детали торжества</p>
-            <h2
-              className="font-display"
-              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 300, color: "var(--charcoal)", letterSpacing: "-0.02em" }}
-            >
-              Дата, время и место
-            </h2>
-          </div>
+        <div style={{ maxWidth: "640px", margin: "0 auto" }}>
+          <p style={{
+            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
+            opacity: 0.4, marginBottom: "1rem", textAlign: "center",
+          }}>
+            детали торжества
+          </p>
+          <h2 className="font-display" style={{
+            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
+            textAlign: "center", marginBottom: "5rem", letterSpacing: "-0.02em",
+          }}>
+            Когда и где
+          </h2>
 
-          <div className="grid md:grid-cols-3 gap-px" style={{ border: "1px solid var(--gold-light)" }}>
-            {[
-              { icon: "Calendar", title: "Дата", lines: ["14 сентября", "2024 года", "Суббота"] },
-              { icon: "Clock", title: "Время", lines: ["Начало в 14:00", "Сбор гостей", "с 13:30"] },
-              { icon: "MapPin", title: "Место", lines: ["Особняк «Белый зал»", "ул. Пречистенка, 12", "Москва"] },
-            ].map(({ icon, title, lines }, i) => (
-              <div
-                key={i}
-                className="flex flex-col items-center justify-center p-12 text-center"
-                style={{
-                  background: "white",
-                  borderRight: i < 2 ? "1px solid var(--gold-light)" : "none",
-                }}
-              >
-                <div className="mb-5">
-                  <Icon name={icon as Parameters<typeof Icon>[0]["name"]} size={20} style={{ color: "var(--gold)" } as React.CSSProperties} />
-                </div>
-                <p style={{ fontSize: "0.65rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--stone)", marginBottom: "1rem" }}>
-                  {title}
-                </p>
-                {lines.map((l, j) => (
-                  <p
-                    key={j}
-                    className="font-display"
-                    style={{
-                      fontSize: j === 0 ? "1.5rem" : "1rem",
-                      fontWeight: 300,
-                      color: j === 0 ? "var(--charcoal)" : "var(--stone)",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {l}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 relative overflow-hidden" style={{ height: "280px" }}>
-            <img src={VENUE_IMAGE} alt="Место проведения" className="w-full h-full object-cover" />
+          {[
+            { icon: "Calendar", label: "дата", value: "14 сентября 2024", sub: "суббота" },
+            { icon: "Clock", label: "время", value: "14:00", sub: "сбор гостей с 13:30" },
+            { icon: "MapPin", label: "место", value: "Особняк «Белый зал»", sub: "ул. Пречистенка, 12 · Москва" },
+          ].map(({ icon, label, value, sub }, i) => (
             <div
-              className="absolute inset-0 flex items-end p-8"
-              style={{ background: "linear-gradient(to top, rgba(44,36,22,0.6) 0%, transparent 60%)" }}
+              key={i}
+              style={{
+                display: "flex", alignItems: "flex-start", gap: "2rem",
+                padding: "2rem 0",
+                borderBottom: i < 2 ? "1px solid rgba(26,23,16,0.1)" : "none",
+              }}
             >
+              <div style={{ paddingTop: "0.2rem", opacity: 0.35, flexShrink: 0 }}>
+                <Icon name={icon as Parameters<typeof Icon>[0]["name"]} size={16} />
+              </div>
               <div>
-                <p className="font-display italic text-white text-xl mb-1">Особняк «Белый зал»</p>
-                <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
-                  Уникальное историческое пространство в сердце Москвы
+                <p style={{
+                  fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+                  fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase",
+                  opacity: 0.4, marginBottom: "0.4rem",
+                }}>
+                  {label}
+                </p>
+                <p className="font-display" style={{ fontSize: "1.6rem", fontWeight: 300, lineHeight: 1.2, marginBottom: "0.2rem" }}>
+                  {value}
+                </p>
+                <p style={{ fontFamily: "Cormorant Garamond, serif", fontStyle: "italic", fontSize: "1rem", opacity: 0.5 }}>
+                  {sub}
                 </p>
               </div>
             </div>
+          ))}
+
+          <div style={{ textAlign: "center", marginTop: "4rem", opacity: 0.55 }}>
+            <img src={DECO_IMG} alt="" style={{ width: "160px", display: "inline-block", mixBlendMode: "multiply" }} />
           </div>
         </div>
       </section>
 
-      {/* ─── RSVP ─── */}
+      {/* ══════════════ RSVP ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[2] = el; }}
-        className="py-32 px-6"
-        style={{ background: "white" }}
+        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)" }}
       >
-        <div className="max-w-xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="ornament mb-3">подтверждение</p>
-            <h2
-              className="font-display"
-              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 300, color: "var(--charcoal)", letterSpacing: "-0.02em" }}
-            >
-              Вы придёте?
-            </h2>
-            <p style={{ color: "var(--stone)", fontSize: "0.85rem", letterSpacing: "0.05em", marginTop: "1rem" }}>
-              Просим подтвердить присутствие до 1 сентября 2024
-            </p>
-          </div>
+        <div style={{ maxWidth: "480px", margin: "0 auto" }}>
+          <p style={{
+            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
+            opacity: 0.4, marginBottom: "1rem", textAlign: "center",
+          }}>
+            подтверждение
+          </p>
+          <h2 className="font-display" style={{
+            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
+            textAlign: "center", marginBottom: "1rem", letterSpacing: "-0.02em",
+          }}>
+            Вы будете?
+          </h2>
+          <p style={{
+            fontFamily: "Cormorant Garamond, serif", fontStyle: "italic",
+            fontSize: "1rem", textAlign: "center", opacity: 0.5, marginBottom: "3.5rem",
+          }}>
+            Просим ответить до 1 сентября 2024
+          </p>
 
           {submitted ? (
-            <div className="text-center py-16" style={{ animation: "scaleIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}>
-              <div className="mb-6 flex justify-center">
-                <Icon name="Heart" size={32} style={{ color: "var(--gold)" } as React.CSSProperties} />
-              </div>
-              <h3 className="font-display mb-3" style={{ fontSize: "2rem", fontWeight: 300, color: "var(--charcoal)" }}>
+            <div style={{ textAlign: "center", padding: "3rem 0" }}>
+              <img
+                src={COUPLE_IMG} alt=""
+                style={{ width: "120px", display: "inline-block", mixBlendMode: "multiply", opacity: 0.7, marginBottom: "1.5rem" }}
+              />
+              <h3 className="font-display" style={{ fontSize: "2.2rem", fontWeight: 300, marginBottom: "0.75rem" }}>
                 Спасибо!
               </h3>
-              <p style={{ color: "var(--stone)", fontSize: "0.9rem" }}>
+              <p style={{ fontFamily: "Cormorant Garamond, serif", fontStyle: "italic", fontSize: "1.1rem", opacity: 0.6 }}>
                 {rsvpStatus === "yes"
-                  ? "Мы рады, что вы будете с нами в этот особенный день."
-                  : "Жаль, что вы не сможете присоединиться. Мы вас любим."}
+                  ? "Мы так рады, что вы будете с нами."
+                  : "Жаль, что не получится. Мы вас любим."}
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <div className="flex gap-4 mb-12 justify-center">
-                {(["yes", "no"] as const).map((v) => (
+              <div style={{ display: "flex", gap: "0", marginBottom: "3rem", justifyContent: "center" }}>
+                {(["yes", "no"] as const).map((v, vi) => (
                   <button
                     key={v}
                     type="button"
                     onClick={() => setRsvpStatus(v)}
                     style={{
                       padding: "0.75rem 2rem",
-                      border: "1px solid",
-                      borderColor: rsvpStatus === v ? "var(--gold)" : "var(--gold-light)",
-                      background: rsvpStatus === v ? "var(--gold)" : "transparent",
-                      color: rsvpStatus === v ? "var(--cream)" : "var(--stone)",
-                      fontSize: "0.75rem",
-                      letterSpacing: "0.2em",
-                      textTransform: "uppercase",
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 400,
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
+                      border: "1px solid var(--ink)",
+                      borderRight: vi === 0 ? "none" : "1px solid var(--ink)",
+                      background: rsvpStatus === v ? "var(--ink)" : "transparent",
+                      color: rsvpStatus === v ? "var(--cream)" : "var(--ink)",
+                      fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+                      fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase",
+                      cursor: "pointer", transition: "all 0.2s",
                     }}
                   >
-                    {v === "yes" ? "Буду" : "Не смогу"}
+                    {v === "yes" ? "Да, буду" : "Не смогу"}
                   </button>
                 ))}
               </div>
 
               {rsvpStatus === "yes" && (
-                <div className="space-y-8 animate-fade-up">
+                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                  {[
+                    { key: "name", label: "Ваше имя", placeholder: "Имя и фамилия" },
+                    { key: "dietary", label: "Пожелания по меню", placeholder: "Вегетарианское, аллергии…" },
+                  ].map(({ key, label, placeholder }) => (
+                    <div key={key}>
+                      <label style={{
+                        display: "block", fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+                        fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase",
+                        opacity: 0.45, marginBottom: "0.5rem",
+                      }}>
+                        {label}
+                      </label>
+                      <input
+                        className="sketch-input"
+                        placeholder={placeholder}
+                        value={formData[key as keyof typeof formData]}
+                        onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                        required={key === "name"}
+                      />
+                    </div>
+                  ))}
                   <div>
-                    <label style={{ fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--stone)", display: "block" }}>
-                      Ваше имя
-                    </label>
-                    <input
-                      className="wedding-input mt-1"
-                      placeholder="Имя и фамилия"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--stone)", display: "block" }}>
+                    <label style={{
+                      display: "block", fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+                      fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase",
+                      opacity: 0.45, marginBottom: "0.5rem",
+                    }}>
                       Количество гостей
                     </label>
                     <select
-                      className="wedding-input mt-1"
+                      className="sketch-input"
                       value={formData.guests}
                       onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                       style={{ background: "transparent", cursor: "pointer" }}
@@ -361,59 +359,40 @@ export default function Index() {
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--stone)", display: "block" }}>
-                      Пожелания по меню
-                    </label>
-                    <input
-                      className="wedding-input mt-1"
-                      placeholder="Вегетарианское, аллергии..."
-                      value={formData.dietary}
-                      onChange={(e) => setFormData({ ...formData, dietary: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--stone)", display: "block" }}>
+                    <label style={{
+                      display: "block", fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+                      fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase",
+                      opacity: 0.45, marginBottom: "0.5rem",
+                    }}>
                       Пожелание молодым
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="Ваши добрые слова..."
+                      placeholder="Ваши добрые слова…"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       style={{
-                        resize: "none",
-                        background: "transparent",
-                        border: "none",
-                        borderBottom: "1px solid var(--gold-light)",
-                        borderRadius: 0,
-                        padding: "0.75rem 0",
-                        color: "var(--charcoal)",
-                        fontFamily: "Montserrat, sans-serif",
-                        fontWeight: 300,
-                        fontSize: "0.875rem",
-                        letterSpacing: "0.05em",
-                        width: "100%",
-                        outline: "none",
-                        marginTop: "0.25rem",
+                        background: "transparent", border: "none",
+                        borderBottom: "1px solid rgba(26,23,16,0.35)",
+                        borderRadius: 0, padding: "0.6rem 0",
+                        color: "var(--ink)", fontFamily: "Cormorant Garamond, serif",
+                        fontSize: "1.1rem", fontStyle: "italic",
+                        width: "100%", outline: "none", resize: "none",
                       }}
                     />
                   </div>
-                  <div className="text-center pt-4">
-                    <button type="submit" className="btn-gold-filled">
-                      Подтвердить
-                    </button>
+                  <div style={{ textAlign: "center", paddingTop: "1rem" }}>
+                    <button type="submit" className="btn-sketch-filled">Подтвердить</button>
                   </div>
                 </div>
               )}
 
               {rsvpStatus === "no" && (
-                <div className="text-center animate-fade-up">
-                  <p className="font-display italic mb-6" style={{ color: "var(--stone)", fontSize: "1.1rem" }}>
-                    Жаль, что вы не сможете быть с нами...
+                <div style={{ textAlign: "center" }}>
+                  <p className="font-display" style={{ fontStyle: "italic", fontSize: "1.2rem", opacity: 0.6, marginBottom: "2rem" }}>
+                    Жаль, что не получится…
                   </p>
-                  <button type="submit" className="btn-gold">
-                    Отправить
-                  </button>
+                  <button type="submit" className="btn-sketch">Отправить</button>
                 </div>
               )}
             </form>
@@ -421,134 +400,139 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ─── ПОДАРКИ ─── */}
+      {/* ══════════════ ПОДАРКИ ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[3] = el; }}
-        className="py-32 px-6"
+        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)" }}
       >
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="ornament mb-3">с любовью</p>
-          <h2
-            className="font-display mb-8"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 300, color: "var(--charcoal)", letterSpacing: "-0.02em" }}
-          >
-            Благодарность и подарки
+        <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
+          <p style={{
+            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
+            opacity: 0.4, marginBottom: "1rem",
+          }}>
+            с любовью
+          </p>
+          <h2 className="font-display" style={{
+            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
+            letterSpacing: "-0.02em", marginBottom: "3rem",
+          }}>
+            Благодарность
           </h2>
 
-          <div style={{ height: "1px", background: "linear-gradient(to right, transparent, var(--gold-light), transparent)", marginBottom: "3rem" }} />
+          <div style={{ opacity: 0.6, width: "160px", margin: "0 auto 2.5rem" }}>
+            <img src={FLOWERS_IMG} alt="" style={{ width: "100%", mixBlendMode: "multiply" }} />
+          </div>
 
-          <p
-            className="font-display italic mb-8"
-            style={{ fontSize: "1.4rem", color: "var(--stone)", fontWeight: 300, lineHeight: 1.7 }}
-          >
-            «Ваше присутствие — лучший подарок,
-            <br />который вы можете нам преподнести»
+          <p className="font-display" style={{
+            fontStyle: "italic", fontSize: "1.35rem", lineHeight: 1.75,
+            opacity: 0.65, marginBottom: "2rem",
+          }}>
+            «Ваше присутствие рядом —<br />лучший подарок, который только можно представить»
           </p>
 
-          <p style={{ color: "var(--stone)", fontSize: "0.875rem", lineHeight: 1.9, maxWidth: "480px", margin: "0 auto 3rem" }}>
-            Если вы хотите порадовать нас чем-то особенным, мы будем благодарны
-            за денежный подарок на нашу совместную мечту — путешествие на Амальфитанское побережье.
+          <div style={{ height: "1px", background: "rgba(26,23,16,0.12)", margin: "2.5rem 0" }} />
+
+          <p style={{
+            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+            fontSize: "0.85rem", lineHeight: 1.9, opacity: 0.65, marginBottom: "2.5rem",
+          }}>
+            Если вы хотите порадовать нас чем-то особенным —
+            мы мечтаем о путешествии на Амальфитанское побережье.
           </p>
 
-          <div
-            className="inline-block px-10 py-8 text-center"
-            style={{ border: "1px solid var(--gold-light)", background: "white" }}
-          >
-            <p style={{ fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--stone)", marginBottom: "1rem" }}>
-              Реквизиты
+          <div style={{
+            border: "1px solid rgba(26,23,16,0.2)",
+            padding: "2rem 2.5rem", display: "inline-block",
+          }}>
+            <p style={{
+              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+              fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase",
+              opacity: 0.4, marginBottom: "0.75rem",
+            }}>
+              реквизиты
             </p>
-            <p className="font-display" style={{ fontSize: "1.5rem", fontWeight: 300, color: "var(--charcoal)", marginBottom: "0.25rem" }}>
+            <p className="font-display" style={{ fontSize: "1.4rem", fontWeight: 300, marginBottom: "0.3rem" }}>
               Мария Петрова
             </p>
-            <p style={{ color: "var(--stone)", fontSize: "0.85rem", letterSpacing: "0.1em" }}>
+            <p style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300, fontSize: "0.8rem", opacity: 0.55 }}>
               Сбербанк · +7 (999) 000-00-00
             </p>
           </div>
-
-          <div style={{ height: "1px", background: "linear-gradient(to right, transparent, var(--gold-light), transparent)", marginTop: "3rem" }} />
         </div>
       </section>
 
-      {/* ─── ПРОГРАММА ─── */}
+      {/* ══════════════ ПРОГРАММА ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[4] = el; }}
-        className="py-32 px-6"
-        style={{ background: "white" }}
+        style={{ padding: "8rem 1.5rem 12rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)" }}
       >
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-20">
-            <p className="ornament mb-3">расписание</p>
-            <h2
-              className="font-display"
-              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 300, color: "var(--charcoal)", letterSpacing: "-0.02em" }}
-            >
-              Программа дня
-            </h2>
-          </div>
+        <div style={{ maxWidth: "560px", margin: "0 auto" }}>
+          <p style={{
+            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
+            opacity: 0.4, marginBottom: "1rem", textAlign: "center",
+          }}>
+            расписание дня
+          </p>
+          <h2 className="font-display" style={{
+            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
+            textAlign: "center", letterSpacing: "-0.02em", marginBottom: "5rem",
+          }}>
+            Программа
+          </h2>
 
-          <div className="relative">
-            <div
-              className="absolute top-0 bottom-0 w-px"
-              style={{
-                left: "4.5rem",
-                background: "linear-gradient(to bottom, transparent, var(--gold-light), var(--gold), var(--gold-light), transparent)",
-              }}
-            />
+          <div style={{ position: "relative" }}>
+            <div style={{
+              position: "absolute", left: "3.5rem", top: 0, bottom: 0,
+              width: "1px", background: "rgba(26,23,16,0.12)",
+            }} />
 
-            <div className="space-y-10">
+            <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
               {SCHEDULE.map(({ time, title, desc }, i) => (
-                <div key={i} className="flex gap-8 items-start">
-                  <div className="text-right shrink-0 pt-1" style={{ width: "4rem" }}>
-                    <span className="font-display" style={{ fontSize: "1.1rem", fontWeight: 300, color: "var(--gold)" }}>
+                <div key={i} style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
+                  <div style={{ width: "3.5rem", textAlign: "right", flexShrink: 0, paddingTop: "0.15rem" }}>
+                    <span className="font-display" style={{ fontSize: "1rem", fontWeight: 300, opacity: 0.5 }}>
                       {time}
                     </span>
                   </div>
-
-                  <div
-                    className="relative z-10 shrink-0 mt-2"
-                    style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      background: "var(--gold)",
-                      border: "3px solid white",
-                      boxShadow: "0 0 0 1px var(--gold-light)",
-                      marginLeft: "-1px",
-                    }}
-                  />
-
-                  <div className="pb-2">
-                    <h3
-                      className="font-display mb-1"
-                      style={{ fontSize: "1.3rem", fontWeight: 400, color: "var(--charcoal)" }}
-                    >
+                  <div style={{
+                    width: "7px", height: "7px", borderRadius: "50%",
+                    border: "1px solid var(--ink)", background: "var(--cream-dark)",
+                    flexShrink: 0, marginTop: "0.4rem", position: "relative", zIndex: 1,
+                  }} />
+                  <div>
+                    <p className="font-display" style={{ fontSize: "1.2rem", fontWeight: 400, marginBottom: "0.2rem" }}>
                       {title}
-                    </h3>
-                    <p style={{ color: "var(--stone)", fontSize: "0.85rem", lineHeight: 1.6 }}>{desc}</p>
+                    </p>
+                    <p style={{ fontFamily: "Cormorant Garamond, serif", fontStyle: "italic", fontSize: "0.95rem", opacity: 0.5 }}>
+                      {desc}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="text-center mt-24 pb-16">
-          <div style={{ height: "1px", background: "linear-gradient(to right, transparent, var(--gold-light), transparent)", marginBottom: "2.5rem" }} />
-          <h3
-            className="font-display italic mb-4"
-            style={{ fontSize: "2rem", color: "var(--charcoal)", fontWeight: 300 }}
-          >
-            Александр &amp; Мария
-          </h3>
-          <p style={{ color: "var(--stone)", fontSize: "0.75rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>
-            14 · 09 · 2024
-          </p>
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <Icon name="Heart" size={12} style={{ color: "var(--gold)" } as React.CSSProperties} />
+          {/* Footer */}
+          <div style={{ textAlign: "center", marginTop: "6rem" }}>
+            <div style={{ height: "1px", background: "rgba(26,23,16,0.12)", marginBottom: "2.5rem" }} />
+            <div style={{ marginBottom: "1.5rem", opacity: 0.5 }}>
+              <img src={COUPLE_IMG} alt="" style={{ width: "90px", display: "inline-block", mixBlendMode: "multiply" }} />
+            </div>
+            <h3 className="font-display" style={{ fontStyle: "italic", fontSize: "1.8rem", fontWeight: 300, marginBottom: "0.5rem" }}>
+              Александр &amp; Мария
+            </h3>
+            <p style={{
+              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
+              fontSize: "0.58rem", letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.35,
+            }}>
+              14 · 09 · 2024
+            </p>
           </div>
         </div>
       </section>
+
     </div>
   );
 }
