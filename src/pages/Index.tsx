@@ -1,6 +1,41 @@
 import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
+function RemoveBgCanvas({ src, className, style }: { src: string; className?: string; style?: React.CSSProperties }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const px = data.data;
+      for (let i = 0; i < px.length; i += 4) {
+        const r = px[i], g = px[i + 1], b = px[i + 2];
+        // считаем яркость — светлые пиксели делаем прозрачными
+        const brightness = (r + g + b) / 3;
+        const threshold = 210;
+        if (brightness > threshold) {
+          // чем светлее — тем прозрачнее
+          px[i + 3] = Math.round(Math.max(0, (255 - brightness) * 4));
+        }
+      }
+      ctx.putImageData(data, 0, 0);
+    };
+    img.src = src;
+  }, [src]);
+
+  return <canvas ref={canvasRef} className={className} style={style} />;
+}
+
 const COUPLE_IMG  = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/6cb1cb89-5198-4189-820e-d15a7f18eeef.jpg";
 const PARTY_IMG   = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/b5e184c4-0baa-4d86-936f-a432f8a017f0.png";
 const RING_IMG    = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/5d887b39-b022-4b60-a025-639c7c7b3645.jpg";
@@ -135,15 +170,9 @@ export default function Index() {
           pointerEvents: "none", userSelect: "none",
         }} />
         <div className="animate-float" style={{ marginBottom: "2rem", width: "clamp(200px, 32vw, 380px)" }}>
-          <img
+          <RemoveBgCanvas
             src={COUPLE_IMG}
-            alt="Жених и невеста"
-            style={{
-              width: "100%",
-              mixBlendMode: "multiply",
-              opacity: 0.9,
-              filter: "contrast(1.3) brightness(0.88) saturate(0)",
-            }}
+            style={{ width: "100%", opacity: 0.88 }}
           />
         </div>
 
