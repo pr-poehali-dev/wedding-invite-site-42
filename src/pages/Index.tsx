@@ -120,21 +120,30 @@ export default function Index() {
       >
         {/* bg: тусовка слева снизу */}
         <img src={PARTY_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-4%", bottom: "6%",
-          width: "clamp(220px, 30vw, 420px)",
-          mixBlendMode: "multiply", opacity: 0.18, pointerEvents: "none", userSelect: "none",
+          position: "absolute", left: "-6%", bottom: "4%",
+          width: "clamp(320px, 45vw, 680px)",
+          mixBlendMode: "multiply", opacity: 0.22,
+          filter: "contrast(1.4) brightness(0.85) saturate(0)",
+          pointerEvents: "none", userSelect: "none",
         }} />
         {/* bg: машина справа снизу */}
         <img src={CAR_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-3%", bottom: "4%",
-          width: "clamp(180px, 24vw, 340px)",
-          mixBlendMode: "multiply", opacity: 0.16, pointerEvents: "none", userSelect: "none",
+          position: "absolute", right: "-5%", bottom: "3%",
+          width: "clamp(280px, 38vw, 560px)",
+          mixBlendMode: "multiply", opacity: 0.2,
+          filter: "contrast(1.4) brightness(0.85) saturate(0)",
+          pointerEvents: "none", userSelect: "none",
         }} />
-        <div className="animate-float" style={{ marginBottom: "2rem", width: "220px" }}>
+        <div className="animate-float" style={{ marginBottom: "2rem", width: "clamp(200px, 32vw, 380px)" }}>
           <img
             src={COUPLE_IMG}
             alt="Жених и невеста"
-            style={{ width: "100%", mixBlendMode: "multiply", opacity: 0.92 }}
+            style={{
+              width: "100%",
+              mixBlendMode: "multiply",
+              opacity: 0.9,
+              filter: "contrast(1.3) brightness(0.88) saturate(0)",
+            }}
           />
         </div>
 
@@ -213,9 +222,11 @@ export default function Index() {
       >
         {/* bg: кольцо справа по центру */}
         <img src={RING_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-2%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(200px, 28vw, 400px)",
-          mixBlendMode: "multiply", opacity: 0.13, pointerEvents: "none", userSelect: "none",
+          position: "absolute", right: "-5%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(340px, 50vw, 700px)",
+          mixBlendMode: "multiply", opacity: 0.18,
+          filter: "contrast(1.5) brightness(0.8) saturate(0)",
+          pointerEvents: "none", userSelect: "none",
         }} />
         <div style={{ maxWidth: "640px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <p style={{
@@ -277,17 +288,13 @@ export default function Index() {
         ref={(el) => { sectionRefs.current[2] = el; }}
         style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)", position: "relative", overflow: "hidden" }}
       >
-        {/* bg: бокалы слева сверху */}
+        {/* bg: бокалы слева, крупно */}
         <img src={GLASSES_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-3%", top: "5%",
-          width: "clamp(160px, 22vw, 300px)",
-          mixBlendMode: "multiply", opacity: 0.14, pointerEvents: "none", userSelect: "none",
-        }} />
-        {/* bg: машина справа снизу */}
-        <img src={CAR_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-2%", bottom: "5%",
-          width: "clamp(160px, 20vw, 280px)",
-          mixBlendMode: "multiply", opacity: 0.11, pointerEvents: "none", userSelect: "none",
+          position: "absolute", left: "-6%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(300px, 42vw, 620px)",
+          mixBlendMode: "multiply", opacity: 0.17,
+          filter: "contrast(1.5) brightness(0.82) saturate(0)",
+          pointerEvents: "none", userSelect: "none",
         }} />
         <div style={{ maxWidth: "480px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <p style={{
@@ -438,17 +445,13 @@ export default function Index() {
         ref={(el) => { sectionRefs.current[3] = el; }}
         style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", position: "relative", overflow: "hidden" }}
       >
-        {/* bg: кольцо слева */}
-        <img src={RING_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-2%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(180px, 24vw, 340px)",
-          mixBlendMode: "multiply", opacity: 0.12, pointerEvents: "none", userSelect: "none",
-        }} />
-        {/* bg: тусовка справа снизу */}
+        {/* bg: тусовка справа, крупно */}
         <img src={PARTY_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-2%", bottom: "3%",
-          width: "clamp(160px, 20vw, 300px)",
-          mixBlendMode: "multiply", opacity: 0.1, pointerEvents: "none", userSelect: "none",
+          position: "absolute", right: "-5%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(320px, 48vw, 660px)",
+          mixBlendMode: "multiply", opacity: 0.16,
+          filter: "contrast(1.4) brightness(0.85) saturate(0)",
+          pointerEvents: "none", userSelect: "none",
         }} />
         <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
           <p style={{
@@ -512,17 +515,13 @@ export default function Index() {
         ref={(el) => { sectionRefs.current[4] = el; }}
         style={{ padding: "8rem 1.5rem 12rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)", position: "relative", overflow: "hidden" }}
       >
-        {/* bg: бокалы справа по центру */}
-        <img src={GLASSES_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-3%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(180px, 24vw, 340px)",
-          mixBlendMode: "multiply", opacity: 0.13, pointerEvents: "none", userSelect: "none",
-        }} />
-        {/* bg: машина слева снизу */}
+        {/* bg: машина слева, крупно */}
         <img src={CAR_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-2%", bottom: "8%",
-          width: "clamp(180px, 22vw, 320px)",
-          mixBlendMode: "multiply", opacity: 0.12, pointerEvents: "none", userSelect: "none",
+          position: "absolute", left: "-5%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(320px, 46vw, 660px)",
+          mixBlendMode: "multiply", opacity: 0.17,
+          filter: "contrast(1.4) brightness(0.85) saturate(0)",
+          pointerEvents: "none", userSelect: "none",
         }} />
         <div style={{ maxWidth: "560px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <p style={{
