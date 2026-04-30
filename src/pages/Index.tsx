@@ -267,7 +267,7 @@ export default function Index() {
           ))}
 
           <div style={{ textAlign: "center", marginTop: "4rem", opacity: 0.55 }}>
-            <img src={DECO_IMG} alt="" style={{ width: "160px", display: "inline-block", mixBlendMode: "multiply" }} />
+            <img src={FLOWERS_IMG} alt="" style={{ width: "160px", display: "inline-block", mixBlendMode: "multiply" }} />
           </div>
         </div>
       </section>
