@@ -120,11 +120,6 @@ export default function Index() {
       {/* ════════════ 1. ГЛАВНАЯ ════════════ */}
       <section ref={(el) => { sectionRefs.current[0] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        {/* Фоновая пара */}
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0 }}>
-          <SketchImg src={IMG_COUPLE} style={{ width: "min(85vw, 420px)", opacity: 0.1 }} />
-        </div>
-
         {/* Сердечко сверху */}
         <div className="animate-float" style={{ fontSize: "2rem", marginBottom: "1rem", position: "relative", zIndex: 1 }}>🖤</div>
 
@@ -150,11 +145,6 @@ export default function Index() {
           </div>
         </div>
 
-        <SketchImg src={IMG_CAR} style={{
-          position: "absolute", bottom: "4rem", left: "50%", transform: "translateX(-50%)",
-          width: "min(75vw, 340px)", opacity: 0.18, zIndex: 0,
-        }} />
-
         <button onClick={() => scrollTo(1)} style={{ position: "absolute", bottom: "5.5rem", left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--blue)", opacity: 0.4, zIndex: 2 }} className="animate-bounce">
           <Icon name="ChevronDown" size={20} />
         </button>
@@ -162,11 +152,6 @@ export default function Index() {
 
       {/* ════════════ 2. ОБРАЩЕНИЕ ════════════ */}
       <section ref={(el) => { sectionRefs.current[1] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
-
-        {/* Фон пара */}
-        <div style={{ position: "absolute", bottom: "3rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
-          <SketchImg src={IMG_COUPLE} style={{ width: "min(85vw, 380px)", opacity: 0.13 }} />
-        </div>
 
         <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1 }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(2rem, 8vw, 2.8rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.2, marginBottom: "2rem" }}>
@@ -208,11 +193,6 @@ export default function Index() {
           </button>
         </div>
 
-        {/* Иллюстрация тусовки внизу */}
-        <div style={{ position: "absolute", bottom: "4rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
-          <SketchImg src={IMG_PARTY} style={{ width: "min(90vw, 420px)", opacity: 0.2 }} />
-        </div>
-
         {/* Гирлянда снова снизу */}
         <div style={{ textAlign: "center", paddingBottom: "0.5rem", fontSize: "1.2rem", letterSpacing: "0.2rem", opacity: 0.5, position: "relative", zIndex: 1 }}>
           🖤🖤🖤🖤🖤🖤🖤
@@ -221,11 +201,6 @@ export default function Index() {
 
       {/* ════════════ 4. ПРОГРАММА + ТАЙМЕР ════════════ */}
       <section ref={(el) => { sectionRefs.current[3] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
-
-        {/* Фон: кольцо */}
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0 }}>
-          <SketchImg src={IMG_RING} style={{ width: "min(90vw, 440px)", opacity: 0.1 }} />
-        </div>
 
         <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1 }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "2rem" }}>
@@ -271,11 +246,6 @@ export default function Index() {
       {/* ════════════ 5. ПОЖЕЛАНИЯ ════════════ */}
       <section ref={(el) => { sectionRefs.current[4] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        {/* Фон бокалы */}
-        <div style={{ position: "absolute", top: "6rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
-          <SketchImg src={IMG_GLASSES} style={{ width: "min(75vw, 320px)", opacity: 0.15 }} />
-        </div>
-
         <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
             <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "2.5rem", textAlign: "center" }}>
@@ -303,11 +273,6 @@ export default function Index() {
 
       {/* ════════════ 6. АНКЕТА ГОСТЯ ════════════ */}
       <section ref={(el) => { sectionRefs.current[5] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
-
-        {/* Фон машина */}
-        <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
-          <SketchImg src={IMG_CAR} style={{ width: "min(85vw, 360px)", opacity: 0.13 }} />
-        </div>
 
         <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, flex: 1 }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "0.5rem" }}>
@@ -364,11 +329,6 @@ export default function Index() {
           🖤🖤🖤🖤🖤🖤🖤
         </div>
 
-        {/* Фон кольцо */}
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0 }}>
-          <SketchImg src={IMG_RING} style={{ width: "min(80vw, 360px)", opacity: 0.12 }} />
-        </div>
-
         <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, textAlign: "center", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.2rem", color: "var(--blue)", opacity: 0.7, marginBottom: "1rem" }}>
             До скорой встречи!<br />С любовью,
@@ -378,10 +338,6 @@ export default function Index() {
           </h2>
         </div>
 
-        {/* Купидоны / бокалы снизу */}
-        <div style={{ position: "absolute", bottom: "4.5rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
-          <SketchImg src={IMG_GLASSES} style={{ width: "min(60vw, 260px)", opacity: 0.15 }} />
-        </div>
       </section>
 
     </div>
