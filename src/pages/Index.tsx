@@ -1,88 +1,96 @@
 import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
-function RemoveBgCanvas({ src, className, style }: { src: string; className?: string; style?: React.CSSProperties }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+// ── Иллюстрации из загруженных картинок ──
+const IMG_CAR      = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/bd977c12-5a17-45e5-be9a-f3621093b9a8.jpg";
+const IMG_COUPLE   = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/6cb1cb89-5198-4189-820e-d15a7f18eeef.jpg";
+const IMG_GLASSES  = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/2b38fad7-7796-42aa-8ea9-8a7fda8a91cf.jpg";
+const IMG_RING     = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/5d887b39-b022-4b60-a025-639c7c7b3645.jpg";
+const IMG_PARTY    = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/b5e184c4-0baa-4d86-936f-a432f8a017f0.png";
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      ctx.drawImage(img, 0, 0);
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const px = data.data;
-      for (let i = 0; i < px.length; i += 4) {
-        const r = px[i], g = px[i + 1], b = px[i + 2];
-        // считаем яркость — светлые пиксели делаем прозрачными
-        const brightness = (r + g + b) / 3;
-        const threshold = 210;
-        if (brightness > threshold) {
-          // чем светлее — тем прозрачнее
-          px[i + 3] = Math.round(Math.max(0, (255 - brightness) * 4));
-        }
-      }
-      ctx.putImageData(data, 0, 0);
-    };
-    img.src = src;
-  }, [src]);
-
-  return <canvas ref={canvasRef} className={className} style={style} />;
-}
-
-const COUPLE_IMG  = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/6cb1cb89-5198-4189-820e-d15a7f18eeef.jpg";
-const PARTY_IMG   = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/b5e184c4-0baa-4d86-936f-a432f8a017f0.png";
-const RING_IMG    = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/5d887b39-b022-4b60-a025-639c7c7b3645.jpg";
-const GLASSES_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/2b38fad7-7796-42aa-8ea9-8a7fda8a91cf.jpg";
-const CAR_IMG     = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/bd977c12-5a17-45e5-be9a-f3621093b9a8.jpg";
-const FLOWERS_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/a943f521-b3c3-4c22-97a1-c51206aca462.jpg";
-
-const PLAYLIST = [
-  { title: "Perfect", artist: "Ed Sheeran" },
-  { title: "A Thousand Years", artist: "Christina Perri" },
-  { title: "Can't Help Falling in Love", artist: "Elvis Presley" },
-  { title: "At Last", artist: "Etta James" },
-  { title: "Make You Feel My Love", artist: "Adele" },
-];
+// Дата свадьбы
+const WEDDING_DATE = new Date("2026-06-26T15:30:00");
 
 const SCHEDULE = [
-  { time: "14:00", title: "Сбор гостей", desc: "Встреча и лёгкий фуршет" },
-  { time: "15:00", title: "Церемония", desc: "Выездная регистрация брака" },
-  { time: "16:00", title: "Фотосессия", desc: "Прогулка и шампанское" },
-  { time: "17:30", title: "Банкет", desc: "Торжественный ужин и первый танец" },
-  { time: "20:00", title: "Торт", desc: "Разрезание свадебного торта" },
-  { time: "21:00", title: "Танцы", desc: "Живая музыка до полуночи" },
+  { time: "15:30", title: "Сбор гостей" },
+  { time: "16:00", title: "Церемония регистрации" },
+  { time: "17:00", title: "Банкет" },
+  { time: "23:00", title: "Завершение вечера" },
 ];
 
-const SECTIONS = ["Главная", "Детали", "RSVP", "Подарки", "Программа"];
+// ── Компонент: иллюстрация с убранным фоном ──
+function SketchImg({ src, style }: { src: string; style?: React.CSSProperties }) {
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden
+      style={{
+        mixBlendMode: "multiply",
+        filter: "contrast(1.5) brightness(0.75) saturate(0)",
+        ...style,
+      }}
+    />
+  );
+}
+
+// ── Countdown ──
+function useCountdown(target: Date) {
+  const calc = () => {
+    const diff = Math.max(0, target.getTime() - Date.now());
+    return {
+      days:    Math.floor(diff / 86400000),
+      hours:   Math.floor((diff % 86400000) / 3600000),
+      minutes: Math.floor((diff % 3600000) / 60000),
+      seconds: Math.floor((diff % 60000) / 1000),
+    };
+  };
+  const [t, setT] = useState(calc);
+  useEffect(() => {
+    const id = setInterval(() => setT(calc()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
+
+// ── Секция-обёртка ──
+function Page({ children, bg }: { children: React.ReactNode; bg?: string }) {
+  return (
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: bg || "#fff",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+        overflow: "hidden",
+        paddingBottom: "4.5rem",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+const SECTIONS = ["Главная", "Детали", "Место", "Программа", "Пожелания", "Анкета", "До встречи"];
 
 export default function Index() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0);
-  const [rsvpStatus, setRsvpStatus] = useState<"yes" | "no" | null>(null);
-  const [formData, setFormData] = useState({ name: "", guests: "1", dietary: "", message: "" });
-  const [submitted, setSubmitted] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
-
+  const [rsvpStep, setRsvpStep] = useState<"form" | "done">("form");
+  const [formData, setFormData] = useState({ name: "", phone: "", dietary: "" });
+  const [wishPage, setWishPage] = useState(0);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const countdown = useCountdown(WEDDING_DATE);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            const idx = sectionRefs.current.indexOf(e.target as HTMLElement);
-            if (idx !== -1) setActiveSection(idx);
-          }
-        });
-      },
-      { threshold: 0.4 }
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const idx = sectionRefs.current.indexOf(e.target as HTMLElement);
+          if (idx !== -1) setActiveSection(idx);
+        }
+      }),
+      { threshold: 0.45 }
     );
     sectionRefs.current.forEach((r) => r && observer.observe(r));
     return () => observer.disconnect();
@@ -91,530 +99,288 @@ export default function Index() {
   const scrollTo = (i: number) =>
     sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth" });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <div style={{ background: "var(--cream)", minHeight: "100vh" }}>
+    <div style={{ background: "#fff" }}>
 
-      {/* ── Side Nav ── */}
-      <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3">
+      {/* ── Side nav ── */}
+      <nav className="fixed right-4 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-2.5">
         {SECTIONS.map((label, i) => (
-          <button
-            key={i}
-            onClick={() => scrollTo(i)}
-            className={`nav-dot ${activeSection === i ? "active" : ""}`}
-            title={label}
-          />
+          <button key={i} onClick={() => scrollTo(i)}
+            className={`nav-dot ${activeSection === i ? "active" : ""}`} title={label} />
         ))}
       </nav>
 
-      {/* ── Music Bar ── */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-5 px-6 py-3"
-        style={{ background: "var(--cream)", borderTop: "1px solid rgba(26,23,16,0.12)" }}
-      >
-        <button
-          onClick={() => setCurrentTrack((p) => (p - 1 + PLAYLIST.length) % PLAYLIST.length)}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ink)", opacity: 0.45 }}
-        >
-          <Icon name="SkipBack" size={13} />
-        </button>
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          style={{
-            width: "28px", height: "28px", borderRadius: "50%",
-            background: isPlaying ? "var(--ink)" : "transparent",
-            border: "1px solid var(--ink)",
-            color: isPlaying ? "var(--cream)" : "var(--ink)",
-            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-            transition: "all 0.2s",
-          }}
-        >
-          <Icon name={isPlaying ? "Pause" : "Play"} size={11} />
-        </button>
-        <button
-          onClick={() => setCurrentTrack((p) => (p + 1) % PLAYLIST.length)}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ink)", opacity: 0.45 }}
-        >
-          <Icon name="SkipForward" size={13} />
-        </button>
-        <span style={{ fontFamily: "Cormorant Garamond, serif", fontSize: "0.95rem", color: "var(--ink)", opacity: 0.55 }}>
-          {PLAYLIST[currentTrack].title}
-          <span style={{ opacity: 0.5 }}> — {PLAYLIST[currentTrack].artist}</span>
-        </span>
-      </div>
+      {/* ── Нижняя кнопка «Подтвердить присутствие» ── */}
+      <button className="bottom-bar" onClick={() => scrollTo(5)}>
+        Подтвердить присутствие
+      </button>
 
-      {/* ══════════════ HERO ══════════════ */}
-      <section
-        ref={(el) => { sectionRefs.current[0] = el; }}
-        className="min-h-screen flex flex-col items-center justify-center relative"
-        style={{ paddingBottom: "4rem", overflow: "hidden" }}
-      >
-        {/* bg: тусовка слева снизу */}
-        <img src={PARTY_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-6%", bottom: "4%",
-          width: "clamp(320px, 45vw, 680px)",
-          mixBlendMode: "multiply", opacity: 0.22,
-          filter: "contrast(1.4) brightness(0.85) saturate(0)",
-          pointerEvents: "none", userSelect: "none",
-        }} />
-        {/* bg: машина справа снизу */}
-        <img src={CAR_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-5%", bottom: "3%",
-          width: "clamp(280px, 38vw, 560px)",
-          mixBlendMode: "multiply", opacity: 0.2,
-          filter: "contrast(1.4) brightness(0.85) saturate(0)",
-          pointerEvents: "none", userSelect: "none",
-        }} />
-        <div className="animate-float" style={{ marginBottom: "2rem", width: "clamp(200px, 32vw, 380px)" }}>
-          <RemoveBgCanvas
-            src={COUPLE_IMG}
-            style={{ width: "100%", opacity: 0.88 }}
-          />
+      {/* ════════════ 1. ГЛАВНАЯ ════════════ */}
+      <section ref={(el) => { sectionRefs.current[0] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
+
+        {/* Фоновая пара */}
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0 }}>
+          <SketchImg src={IMG_COUPLE} style={{ width: "min(85vw, 420px)", opacity: 0.1 }} />
         </div>
 
-        <div className="text-center px-8">
-          <p
-            className="animate-fade-in delay-0"
-            style={{
-              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-              fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase",
-              color: "var(--ink)", marginBottom: "1.5rem",
-            }}
-          >
-            с радостью приглашают вас
-          </p>
+        {/* Сердечко сверху */}
+        <div className="animate-float" style={{ fontSize: "2rem", marginBottom: "1rem", position: "relative", zIndex: 1 }}>🖤</div>
 
-          <h1
-            className="animate-fade-up delay-1 font-display"
-            style={{
-              fontSize: "clamp(3.8rem, 11vw, 8rem)", fontWeight: 300,
-              lineHeight: 0.95, letterSpacing: "-0.03em",
-              color: "var(--ink)", marginBottom: "1.5rem",
-            }}
-          >
+        <div style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "0 2rem" }}>
+          <h1 className="font-hand animate-fade-up delay-1"
+            style={{ fontSize: "clamp(3.5rem, 14vw, 6rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.1, marginBottom: "0.5rem" }}>
             Александр
-            <br />
-            <span style={{ fontStyle: "italic", opacity: 0.4, fontSize: "0.5em", letterSpacing: "0.05em" }}>и</span>
-            <br />
+          </h1>
+          <p className="font-hand animate-fade-up delay-2"
+            style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--blue)", opacity: 0.6, marginBottom: "0.25rem" }}>+</p>
+          <h1 className="font-hand animate-fade-up delay-3"
+            style={{ fontSize: "clamp(3.5rem, 14vw, 6rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.1, marginBottom: "2rem" }}>
             Мария
           </h1>
 
-          <div className="animate-fade-in delay-3" style={{ marginBottom: "0.75rem" }}>
-            <span style={{
-              fontFamily: "Cormorant Garamond, serif",
-              fontStyle: "italic", fontSize: "1.3rem",
-              color: "var(--ink)", opacity: 0.55,
-            }}>
-              14 сентября 2024
-            </span>
-          </div>
-
-          <p
-            className="animate-fade-in delay-4"
-            style={{
-              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-              fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase",
-              color: "var(--ink)", opacity: 0.45, marginBottom: "2.5rem",
-            }}
-          >
-            Москва · Особняк «Белый зал»
+          <p className="font-hand animate-fade-in delay-4"
+            style={{ fontSize: "1.35rem", color: "var(--blue)", opacity: 0.75, marginBottom: "2rem" }}>
+            26 июня, 2026 | 15:30
           </p>
 
           <div className="animate-fade-in delay-5">
-            <button onClick={() => scrollTo(1)} className="btn-sketch">
-              Открыть приглашение
-            </button>
+            <button className="btn-blue" onClick={() => scrollTo(1)}>Открыть приглашение</button>
           </div>
         </div>
 
-        <button
-          onClick={() => scrollTo(1)}
-          className="absolute animate-bounce"
-          style={{
-            bottom: "5rem", left: "50%", transform: "translateX(-50%)",
-            background: "none", border: "none", cursor: "pointer",
-            color: "var(--ink)", opacity: 0.25,
-          }}
-        >
-          <Icon name="ChevronDown" size={18} />
+        <SketchImg src={IMG_CAR} style={{
+          position: "absolute", bottom: "4rem", left: "50%", transform: "translateX(-50%)",
+          width: "min(75vw, 340px)", opacity: 0.18, zIndex: 0,
+        }} />
+
+        <button onClick={() => scrollTo(1)} style={{ position: "absolute", bottom: "5.5rem", left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--blue)", opacity: 0.4, zIndex: 2 }} className="animate-bounce">
+          <Icon name="ChevronDown" size={20} />
         </button>
       </section>
 
-      {/* ══════════════ ДЕТАЛИ ══════════════ */}
-      <section
-        ref={(el) => { sectionRefs.current[1] = el; }}
-        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", position: "relative", overflow: "hidden" }}
-      >
-        {/* bg: кольцо справа по центру */}
-        <img src={RING_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-5%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(340px, 50vw, 700px)",
-          mixBlendMode: "multiply", opacity: 0.18,
-          filter: "contrast(1.5) brightness(0.8) saturate(0)",
-          pointerEvents: "none", userSelect: "none",
-        }} />
-        <div style={{ maxWidth: "640px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <p style={{
-            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
-            opacity: 0.4, marginBottom: "1rem", textAlign: "center",
-          }}>
-            детали торжества
-          </p>
-          <h2 className="font-display" style={{
-            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
-            textAlign: "center", marginBottom: "5rem", letterSpacing: "-0.02em",
-          }}>
-            Когда и где
+      {/* ════════════ 2. ОБРАЩЕНИЕ ════════════ */}
+      <section ref={(el) => { sectionRefs.current[1] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
+
+        {/* Фон пара */}
+        <div style={{ position: "absolute", bottom: "3rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
+          <SketchImg src={IMG_COUPLE} style={{ width: "min(85vw, 380px)", opacity: 0.13 }} />
+        </div>
+
+        <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1 }}>
+          <h2 className="font-hand" style={{ fontSize: "clamp(2rem, 8vw, 2.8rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.2, marginBottom: "2rem" }}>
+            Дорогие наши<br />друзья и родные!
           </h2>
+          <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.15rem", color: "var(--blue)", lineHeight: 1.6, marginBottom: "1.25rem" }}>
+            Мы решили сказать друг другу «да» и хотим разделить этот момент только с самыми родными.
+          </p>
+          <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.15rem", color: "var(--blue)", lineHeight: 1.6 }}>
+            Будем счастливы видеть вас на нашей свадьбе!
+          </p>
 
-          {[
-            { icon: "Calendar", label: "дата", value: "14 сентября 2024", sub: "суббота" },
-            { icon: "Clock", label: "время", value: "14:00", sub: "сбор гостей с 13:30" },
-            { icon: "MapPin", label: "место", value: "Особняк «Белый зал»", sub: "ул. Пречистенка, 12 · Москва" },
-          ].map(({ icon, label, value, sub }, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex", alignItems: "flex-start", gap: "2rem",
-                padding: "2rem 0",
-                borderBottom: i < 2 ? "1px solid rgba(26,23,16,0.1)" : "none",
-              }}
-            >
-              <div style={{ paddingTop: "0.2rem", opacity: 0.35, flexShrink: 0 }}>
-                <Icon name={icon as Parameters<typeof Icon>[0]["name"]} size={16} />
-              </div>
-              <div>
-                <p style={{
-                  fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-                  fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase",
-                  opacity: 0.4, marginBottom: "0.4rem",
-                }}>
-                  {label}
-                </p>
-                <p className="font-display" style={{ fontSize: "1.6rem", fontWeight: 300, lineHeight: 1.2, marginBottom: "0.2rem" }}>
-                  {value}
-                </p>
-                <p style={{ fontFamily: "Cormorant Garamond, serif", fontStyle: "italic", fontSize: "1rem", opacity: 0.5 }}>
-                  {sub}
-                </p>
-              </div>
-            </div>
-          ))}
-
-          <div style={{ textAlign: "center", marginTop: "4rem", opacity: 0.55 }}>
-            <img src={FLOWERS_IMG} alt="" style={{ width: "160px", display: "inline-block", mixBlendMode: "multiply" }} />
+          {/* Маленькие сердечки */}
+          <div style={{ marginTop: "2rem", display: "flex", gap: "0.5rem" }}>
+            {["🖤", "🖤", "🖤"].map((h, i) => (
+              <span key={i} style={{ fontSize: "1.2rem", opacity: 0.35 + i * 0.2 }}>{h}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════ RSVP ══════════════ */}
-      <section
-        ref={(el) => { sectionRefs.current[2] = el; }}
-        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)", position: "relative", overflow: "hidden" }}
-      >
-        {/* bg: бокалы слева, крупно */}
-        <img src={GLASSES_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-6%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(300px, 42vw, 620px)",
-          mixBlendMode: "multiply", opacity: 0.17,
-          filter: "contrast(1.5) brightness(0.82) saturate(0)",
-          pointerEvents: "none", userSelect: "none",
-        }} />
-        <div style={{ maxWidth: "480px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <p style={{
-            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
-            opacity: 0.4, marginBottom: "1rem", textAlign: "center",
-          }}>
-            подтверждение
-          </p>
-          <h2 className="font-display" style={{
-            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
-            textAlign: "center", marginBottom: "1rem", letterSpacing: "-0.02em",
-          }}>
-            Вы будете?
+      {/* ════════════ 3. МЕСТО ════════════ */}
+      <section ref={(el) => { sectionRefs.current[2] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
+
+        {/* Сверху — гирлянда сердечек */}
+        <div style={{ textAlign: "center", paddingTop: "1.5rem", fontSize: "1.5rem", letterSpacing: "0.3rem", opacity: 0.7 }}>
+          🖤🖤🖤🖤🖤🖤🖤
+        </div>
+
+        <div style={{ padding: "2.5rem 2rem", position: "relative", zIndex: 1, flex: 1 }}>
+          <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "1.5rem" }}>
+            Место проведения
           </h2>
-          <p style={{
-            fontFamily: "Cormorant Garamond, serif", fontStyle: "italic",
-            fontSize: "1rem", textAlign: "center", opacity: 0.5, marginBottom: "3.5rem",
-          }}>
-            Просим ответить до 1 сентября 2024
+          <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.2rem", color: "var(--blue)", lineHeight: 1.7, marginBottom: "2rem" }}>
+            г. Москва,<br />ул. Пречистенка, д. 12.
           </p>
+          <button className="btn-blue" style={{ fontSize: "1.1rem", padding: "0.65rem 1.8rem" }}>
+            Как добраться
+          </button>
+        </div>
 
-          {submitted ? (
-            <div style={{ textAlign: "center", padding: "3rem 0" }}>
-              <img
-                src={COUPLE_IMG} alt=""
-                style={{ width: "120px", display: "inline-block", mixBlendMode: "multiply", opacity: 0.7, marginBottom: "1.5rem" }}
-              />
-              <h3 className="font-display" style={{ fontSize: "2.2rem", fontWeight: 300, marginBottom: "0.75rem" }}>
-                Спасибо!
-              </h3>
-              <p style={{ fontFamily: "Cormorant Garamond, serif", fontStyle: "italic", fontSize: "1.1rem", opacity: 0.6 }}>
-                {rsvpStatus === "yes"
-                  ? "Мы так рады, что вы будете с нами."
-                  : "Жаль, что не получится. Мы вас любим."}
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div style={{ display: "flex", gap: "0", marginBottom: "3rem", justifyContent: "center" }}>
-                {(["yes", "no"] as const).map((v, vi) => (
-                  <button
-                    key={v}
-                    type="button"
-                    onClick={() => setRsvpStatus(v)}
-                    style={{
-                      padding: "0.75rem 2rem",
-                      border: "1px solid var(--ink)",
-                      borderRight: vi === 0 ? "none" : "1px solid var(--ink)",
-                      background: rsvpStatus === v ? "var(--ink)" : "transparent",
-                      color: rsvpStatus === v ? "var(--cream)" : "var(--ink)",
-                      fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-                      fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase",
-                      cursor: "pointer", transition: "all 0.2s",
-                    }}
-                  >
-                    {v === "yes" ? "Да, буду" : "Не смогу"}
-                  </button>
-                ))}
-              </div>
+        {/* Иллюстрация тусовки внизу */}
+        <div style={{ position: "absolute", bottom: "4rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
+          <SketchImg src={IMG_PARTY} style={{ width: "min(90vw, 420px)", opacity: 0.2 }} />
+        </div>
 
-              {rsvpStatus === "yes" && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-                  {[
-                    { key: "name", label: "Ваше имя", placeholder: "Имя и фамилия" },
-                    { key: "dietary", label: "Пожелания по меню", placeholder: "Вегетарианское, аллергии…" },
-                  ].map(({ key, label, placeholder }) => (
-                    <div key={key}>
-                      <label style={{
-                        display: "block", fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-                        fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase",
-                        opacity: 0.45, marginBottom: "0.5rem",
-                      }}>
-                        {label}
-                      </label>
-                      <input
-                        className="sketch-input"
-                        placeholder={placeholder}
-                        value={formData[key as keyof typeof formData]}
-                        onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                        required={key === "name"}
-                      />
-                    </div>
-                  ))}
-                  <div>
-                    <label style={{
-                      display: "block", fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-                      fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase",
-                      opacity: 0.45, marginBottom: "0.5rem",
-                    }}>
-                      Количество гостей
-                    </label>
-                    <select
-                      className="sketch-input"
-                      value={formData.guests}
-                      onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                      style={{ background: "transparent", cursor: "pointer" }}
-                    >
-                      <option value="1">1 гость</option>
-                      <option value="2">2 гостя</option>
-                      <option value="3">3 гостя</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{
-                      display: "block", fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-                      fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase",
-                      opacity: 0.45, marginBottom: "0.5rem",
-                    }}>
-                      Пожелание молодым
-                    </label>
-                    <textarea
-                      rows={3}
-                      placeholder="Ваши добрые слова…"
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      style={{
-                        background: "transparent", border: "none",
-                        borderBottom: "1px solid rgba(26,23,16,0.35)",
-                        borderRadius: 0, padding: "0.6rem 0",
-                        color: "var(--ink)", fontFamily: "Cormorant Garamond, serif",
-                        fontSize: "1.1rem", fontStyle: "italic",
-                        width: "100%", outline: "none", resize: "none",
-                      }}
-                    />
-                  </div>
-                  <div style={{ textAlign: "center", paddingTop: "1rem" }}>
-                    <button type="submit" className="btn-sketch-filled">Подтвердить</button>
-                  </div>
-                </div>
-              )}
-
-              {rsvpStatus === "no" && (
-                <div style={{ textAlign: "center" }}>
-                  <p className="font-display" style={{ fontStyle: "italic", fontSize: "1.2rem", opacity: 0.6, marginBottom: "2rem" }}>
-                    Жаль, что не получится…
-                  </p>
-                  <button type="submit" className="btn-sketch">Отправить</button>
-                </div>
-              )}
-            </form>
-          )}
+        {/* Гирлянда снова снизу */}
+        <div style={{ textAlign: "center", paddingBottom: "0.5rem", fontSize: "1.2rem", letterSpacing: "0.2rem", opacity: 0.5, position: "relative", zIndex: 1 }}>
+          🖤🖤🖤🖤🖤🖤🖤
         </div>
       </section>
 
-      {/* ══════════════ ПОДАРКИ ══════════════ */}
-      <section
-        ref={(el) => { sectionRefs.current[3] = el; }}
-        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", position: "relative", overflow: "hidden" }}
-      >
-        {/* bg: тусовка справа, крупно */}
-        <img src={PARTY_IMG} alt="" aria-hidden style={{
-          position: "absolute", right: "-5%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(320px, 48vw, 660px)",
-          mixBlendMode: "multiply", opacity: 0.16,
-          filter: "contrast(1.4) brightness(0.85) saturate(0)",
-          pointerEvents: "none", userSelect: "none",
-        }} />
-        <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <p style={{
-            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
-            opacity: 0.4, marginBottom: "1rem",
-          }}>
-            с любовью
-          </p>
-          <h2 className="font-display" style={{
-            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
-            letterSpacing: "-0.02em", marginBottom: "3rem",
-          }}>
-            Благодарность
-          </h2>
+      {/* ════════════ 4. ПРОГРАММА + ТАЙМЕР ════════════ */}
+      <section ref={(el) => { sectionRefs.current[3] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-          <div style={{ opacity: 0.6, width: "160px", margin: "0 auto 2.5rem" }}>
-            <img src={FLOWERS_IMG} alt="" style={{ width: "100%", mixBlendMode: "multiply" }} />
-          </div>
-
-          <p className="font-display" style={{
-            fontStyle: "italic", fontSize: "1.35rem", lineHeight: 1.75,
-            opacity: 0.65, marginBottom: "2rem",
-          }}>
-            «Ваше присутствие рядом —<br />лучший подарок, который только можно представить»
-          </p>
-
-          <div style={{ height: "1px", background: "rgba(26,23,16,0.12)", margin: "2.5rem 0" }} />
-
-          <p style={{
-            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-            fontSize: "0.85rem", lineHeight: 1.9, opacity: 0.65, marginBottom: "2.5rem",
-          }}>
-            Если вы хотите порадовать нас чем-то особенным —
-            мы мечтаем о путешествии на Амальфитанское побережье.
-          </p>
-
-          <div style={{
-            border: "1px solid rgba(26,23,16,0.2)",
-            padding: "2rem 2.5rem", display: "inline-block",
-          }}>
-            <p style={{
-              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-              fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase",
-              opacity: 0.4, marginBottom: "0.75rem",
-            }}>
-              реквизиты
-            </p>
-            <p className="font-display" style={{ fontSize: "1.4rem", fontWeight: 300, marginBottom: "0.3rem" }}>
-              Мария Петрова
-            </p>
-            <p style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300, fontSize: "0.8rem", opacity: 0.55 }}>
-              Сбербанк · +7 (999) 000-00-00
-            </p>
-          </div>
+        {/* Фон: кольцо */}
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0 }}>
+          <SketchImg src={IMG_RING} style={{ width: "min(90vw, 440px)", opacity: 0.1 }} />
         </div>
-      </section>
 
-      {/* ══════════════ ПРОГРАММА ══════════════ */}
-      <section
-        ref={(el) => { sectionRefs.current[4] = el; }}
-        style={{ padding: "8rem 1.5rem 12rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)", position: "relative", overflow: "hidden" }}
-      >
-        {/* bg: машина слева, крупно */}
-        <img src={CAR_IMG} alt="" aria-hidden style={{
-          position: "absolute", left: "-5%", top: "50%", transform: "translateY(-50%)",
-          width: "clamp(320px, 46vw, 660px)",
-          mixBlendMode: "multiply", opacity: 0.17,
-          filter: "contrast(1.4) brightness(0.85) saturate(0)",
-          pointerEvents: "none", userSelect: "none",
-        }} />
-        <div style={{ maxWidth: "560px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <p style={{
-            fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-            fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
-            opacity: 0.4, marginBottom: "1rem", textAlign: "center",
-          }}>
-            расписание дня
-          </p>
-          <h2 className="font-display" style={{
-            fontSize: "clamp(2.2rem, 5vw, 3.8rem)", fontWeight: 300,
-            textAlign: "center", letterSpacing: "-0.02em", marginBottom: "5rem",
-          }}>
-            Программа
+        <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1 }}>
+          <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "2rem" }}>
+            Программа дня
           </h2>
 
-          <div style={{ position: "relative" }}>
-            <div style={{
-              position: "absolute", left: "3.5rem", top: 0, bottom: 0,
-              width: "1px", background: "rgba(26,23,16,0.12)",
-            }} />
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
-              {SCHEDULE.map(({ time, title, desc }, i) => (
-                <div key={i} style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
-                  <div style={{ width: "3.5rem", textAlign: "right", flexShrink: 0, paddingTop: "0.15rem" }}>
-                    <span className="font-display" style={{ fontSize: "1rem", fontWeight: 300, opacity: 0.5 }}>
-                      {time}
-                    </span>
-                  </div>
-                  <div style={{
-                    width: "7px", height: "7px", borderRadius: "50%",
-                    border: "1px solid var(--ink)", background: "var(--cream-dark)",
-                    flexShrink: 0, marginTop: "0.4rem", position: "relative", zIndex: 1,
-                  }} />
-                  <div>
-                    <p className="font-display" style={{ fontSize: "1.2rem", fontWeight: 400, marginBottom: "0.2rem" }}>
-                      {title}
-                    </p>
-                    <p style={{ fontFamily: "Cormorant Garamond, serif", fontStyle: "italic", fontSize: "0.95rem", opacity: 0.5 }}>
-                      {desc}
-                    </p>
-                  </div>
+          <div style={{ position: "relative", marginBottom: "3rem" }}>
+            {/* Вертикальная линия */}
+            <div style={{ position: "absolute", left: "calc(50% - 0.5px)", top: 0, bottom: 0, width: "1px", background: "rgba(37,99,235,0.25)" }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+              {SCHEDULE.map(({ time, title }, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", gap: "1rem" }}>
+                  <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.05rem", color: "var(--blue)", opacity: 0.7, textAlign: "right" }}>{title}</p>
+                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", border: "1.5px solid var(--blue)", background: "#fff", flexShrink: 0 }} />
+                  <p className="font-hand" style={{ fontSize: "1.6rem", fontWeight: 700, color: "var(--blue)" }}>{time}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Footer */}
-          <div style={{ textAlign: "center", marginTop: "6rem" }}>
-            <div style={{ height: "1px", background: "rgba(26,23,16,0.12)", marginBottom: "2.5rem" }} />
-            <div style={{ marginBottom: "1.5rem", opacity: 0.5 }}>
-              <img src={COUPLE_IMG} alt="" style={{ width: "90px", display: "inline-block", mixBlendMode: "multiply" }} />
-            </div>
-            <h3 className="font-display" style={{ fontStyle: "italic", fontSize: "1.8rem", fontWeight: 300, marginBottom: "0.5rem" }}>
-              Александр &amp; Мария
-            </h3>
-            <p style={{
-              fontFamily: "Montserrat, sans-serif", fontWeight: 300,
-              fontSize: "0.58rem", letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.35,
-            }}>
-              14 · 09 · 2024
+          {/* Таймер */}
+          <div style={{ marginTop: "1rem" }}>
+            <p className="font-hand" style={{ fontSize: "1.6rem", fontWeight: 600, color: "var(--blue)", marginBottom: "1rem", textAlign: "center" }}>
+              До свадьбы осталось
             </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.5rem", textAlign: "center" }}>
+              {[
+                { val: countdown.days,    label: "Дней" },
+                { val: countdown.hours,   label: "Часа" },
+                { val: countdown.minutes, label: "Минут" },
+                { val: countdown.seconds, label: "Секунд" },
+              ].map(({ val, label }) => (
+                <div key={label}>
+                  <p className="font-hand" style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--blue)", lineHeight: 1 }}>{pad(val)}</p>
+                  <p style={{ fontFamily: "Montserrat, sans-serif", fontSize: "0.6rem", color: "var(--blue)", opacity: 0.55, letterSpacing: "0.05em", marginTop: "0.2rem" }}>{label}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* ════════════ 5. ПОЖЕЛАНИЯ ════════════ */}
+      <section ref={(el) => { sectionRefs.current[4] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
+
+        {/* Фон бокалы */}
+        <div style={{ position: "absolute", top: "6rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
+          <SketchImg src={IMG_GLASSES} style={{ width: "min(75vw, 320px)", opacity: 0.15 }} />
+        </div>
+
+        <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "2.5rem", textAlign: "center" }}>
+              Пожелания
+            </h2>
+
+            {wishPage === 0 ? (
+              <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.1rem", color: "var(--blue)", lineHeight: 1.7, textAlign: "center" }}>
+                Будем очень признательны, если вы воздержитесь от криков «Горько». Ведь поцелуй — это знак выражения чувств, и он не может быть по заказу.
+              </p>
+            ) : (
+              <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.1rem", color: "var(--blue)", lineHeight: 1.7, textAlign: "center" }}>
+                Пожалуйста, не дарите нам цветы! Мы не успеем насладиться их красотой и ароматом. Если хотите подарить нам ценный и нужный подарок, мы будем очень благодарны за вклад в бюджет нашей молодой семьи.
+              </p>
+            )}
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1.5rem", marginTop: "2rem" }}>
+            <button onClick={() => setWishPage(0)} style={{ fontFamily: "Caveat, cursive", fontSize: "1.1rem", color: "var(--blue)", background: "none", border: "none", cursor: "pointer", opacity: wishPage === 0 ? 1 : 0.4 }}>←</button>
+            <span style={{ fontFamily: "Caveat, cursive", fontSize: "1rem", color: "var(--blue)", opacity: 0.6 }}>{wishPage + 1} / 2</span>
+            <button onClick={() => setWishPage(1)} style={{ fontFamily: "Caveat, cursive", fontSize: "1.1rem", color: "var(--blue)", background: "none", border: "none", cursor: "pointer", opacity: wishPage === 1 ? 1 : 0.4 }}>→</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════ 6. АНКЕТА ГОСТЯ ════════════ */}
+      <section ref={(el) => { sectionRefs.current[5] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
+
+        {/* Фон машина */}
+        <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
+          <SketchImg src={IMG_CAR} style={{ width: "min(85vw, 360px)", opacity: 0.13 }} />
+        </div>
+
+        <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, flex: 1 }}>
+          <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "0.5rem" }}>
+            Анкета гостя
+          </h2>
+          <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.05rem", color: "var(--blue)", opacity: 0.7, marginBottom: "2rem", lineHeight: 1.5 }}>
+            Пожалуйста, подтвердите своё присутствие на мероприятии до:
+          </p>
+          <p className="font-hand" style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--blue)", marginBottom: "2.5rem" }}>
+            01.06.2026 ✓
+          </p>
+
+          {rsvpStep === "done" ? (
+            <div style={{ textAlign: "center", paddingTop: "2rem" }}>
+              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🖤</div>
+              <p className="font-hand" style={{ fontSize: "2rem", fontWeight: 600, color: "var(--blue)" }}>Спасибо!</p>
+              <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.1rem", color: "var(--blue)", opacity: 0.7, marginTop: "0.5rem" }}>Мы вас ждём!</p>
+            </div>
+          ) : (
+            <form onSubmit={(e) => { e.preventDefault(); setRsvpStep("done"); }} style={{ display: "flex", flexDirection: "column", gap: "1.8rem" }}>
+              {[
+                { key: "name",     label: "Ваше имя",        placeholder: "Имя и фамилия" },
+                { key: "phone",    label: "Телефон",          placeholder: "+7 (___) ___-__-__" },
+                { key: "dietary",  label: "Особое меню",      placeholder: "Вегетарианское, аллергии…" },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key}>
+                  <label style={{ display: "block", fontFamily: "Montserrat, sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--blue)", opacity: 0.5, marginBottom: "0.4rem" }}>
+                    {label}
+                  </label>
+                  <input
+                    className="sketch-input"
+                    placeholder={placeholder}
+                    value={formData[key as keyof typeof formData]}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                    required={key === "name"}
+                  />
+                </div>
+              ))}
+              <div style={{ paddingTop: "0.5rem" }}>
+                <button type="submit" className="btn-blue" style={{ width: "100%" }}>
+                  Подтвердить
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* ════════════ 7. ДО ВСТРЕЧИ ════════════ */}
+      <section ref={(el) => { sectionRefs.current[6] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
+
+        {/* Гирлянда сверху */}
+        <div style={{ textAlign: "center", paddingTop: "1.5rem", fontSize: "1.4rem", letterSpacing: "0.2rem", opacity: 0.65 }}>
+          🖤🖤🖤🖤🖤🖤🖤
+        </div>
+
+        {/* Фон кольцо */}
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 0 }}>
+          <SketchImg src={IMG_RING} style={{ width: "min(80vw, 360px)", opacity: 0.12 }} />
+        </div>
+
+        <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, textAlign: "center", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.2rem", color: "var(--blue)", opacity: 0.7, marginBottom: "1rem" }}>
+            До скорой встречи!<br />С любовью,
+          </p>
+          <h2 className="font-hand" style={{ fontSize: "clamp(3rem, 12vw, 5rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.1 }}>
+            Александр<br />+<br />Мария
+          </h2>
+        </div>
+
+        {/* Купидоны / бокалы снизу */}
+        <div style={{ position: "absolute", bottom: "4.5rem", left: "50%", transform: "translateX(-50%)", zIndex: 0 }}>
+          <SketchImg src={IMG_GLASSES} style={{ width: "min(60vw, 260px)", opacity: 0.15 }} />
         </div>
       </section>
 

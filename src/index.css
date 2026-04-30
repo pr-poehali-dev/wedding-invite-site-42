@@ -4,40 +4,41 @@
 
 @layer base {
   :root {
-    --background: 47 30% 95%;
-    --foreground: 30 15% 15%;
-    --card: 47 30% 95%;
-    --card-foreground: 30 15% 15%;
-    --popover: 47 30% 95%;
-    --popover-foreground: 30 15% 15%;
-    --primary: 30 15% 15%;
-    --primary-foreground: 47 30% 95%;
-    --secondary: 47 20% 90%;
-    --secondary-foreground: 30 15% 20%;
-    --muted: 47 20% 90%;
-    --muted-foreground: 30 10% 50%;
-    --accent: 47 20% 88%;
-    --accent-foreground: 30 15% 15%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 40 15% 78%;
-    --input: 40 15% 78%;
-    --ring: 30 15% 15%;
-    --radius: 0rem;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 221 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 50%;
+    --accent: 221 85% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 221 85% 45%;
+    --radius: 2rem;
 
-    --ink: #1a1710;
-    --cream: #f2eee6;
-    --cream-dark: #e8e3d8;
-    --warm-gray: #9a9080;
+    --blue: #2563eb;
+    --blue-dark: #1d4ed8;
+    --ink: #1a1a2e;
+    --paper: #ffffff;
+    --paper-warm: #f8f7f4;
 
-    --sidebar-background: 47 30% 95%;
-    --sidebar-foreground: 30 15% 15%;
-    --sidebar-primary: 30 15% 15%;
-    --sidebar-primary-foreground: 47 30% 95%;
-    --sidebar-accent: 47 20% 88%;
-    --sidebar-accent-foreground: 30 15% 15%;
-    --sidebar-border: 40 15% 78%;
-    --sidebar-ring: 30 15% 15%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 221 85% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 221 85% 45%;
   }
 }
 
@@ -49,26 +50,22 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--cream);
+    background: var(--paper);
     color: var(--ink);
-    font-family: "Cormorant Garamond", serif;
+    font-family: "Montserrat", sans-serif;
     font-weight: 400;
   }
 }
 
-.font-display {
-  font-family: "Cormorant Garamond", serif;
-}
-.font-sans-light {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
+.font-hand {
+  font-family: "Caveat", cursive;
 }
 
 /* ── Animations ── */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -86,128 +83,166 @@
 @keyframes floatY {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0px);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-6px);
+  }
+}
+@keyframes countdown-tick {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  45% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
 .animate-fade-up {
-  opacity: 0;
-  animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .animate-fade-in {
-  opacity: 0;
-  animation: fadeIn 1.2s ease forwards;
+  animation: fadeIn 1s ease forwards;
 }
 .animate-float {
-  animation: floatY 4s ease-in-out infinite;
+  animation: floatY 3.5s ease-in-out infinite;
 }
 
-.delay-0 {
-  animation-delay: 0s;
-}
 .delay-1 {
-  animation-delay: 0.2s;
+  animation-delay: 0.15s;
 }
 .delay-2 {
-  animation-delay: 0.4s;
+  animation-delay: 0.3s;
 }
 .delay-3 {
-  animation-delay: 0.6s;
+  animation-delay: 0.5s;
 }
 .delay-4 {
-  animation-delay: 0.8s;
+  animation-delay: 0.7s;
 }
 .delay-5 {
-  animation-delay: 1s;
-}
-.delay-6 {
-  animation-delay: 1.2s;
+  animation-delay: 0.9s;
 }
 
-/* ── Inputs ── */
-.sketch-input {
-  background: transparent;
+/* ── Blue button ── */
+.btn-blue {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-family: "Caveat", cursive;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.75rem 2.5rem;
+  border-radius: 2rem;
   border: none;
-  border-bottom: 1px solid rgba(26, 23, 16, 0.4);
-  border-radius: 0;
-  padding: 0.6rem 0;
-  color: var(--ink);
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.1rem;
-  font-weight: 400;
-  width: 100%;
-  outline: none;
-  transition: border-color 0.3s;
-}
-.sketch-input:focus {
-  border-bottom-color: var(--ink);
-}
-.sketch-input::placeholder {
-  color: var(--ink);
-  opacity: 0.35;
-  font-style: italic;
-}
-
-/* ── Buttons ── */
-.btn-sketch {
-  display: inline-block;
-  background: transparent;
-  border: 1px solid var(--ink);
-  color: var(--ink);
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.9rem 2.4rem;
   cursor: pointer;
   transition:
-    background 0.25s,
-    color 0.25s;
+    background 0.2s,
+    transform 0.15s;
 }
-.btn-sketch:hover {
-  background: var(--ink);
-  color: var(--cream);
+.btn-blue:hover {
+  background: var(--blue-dark);
+  transform: translateY(-1px);
 }
 
-.btn-sketch-filled {
-  display: inline-block;
-  background: var(--ink);
-  border: 1px solid var(--ink);
-  color: var(--cream);
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.9rem 2.4rem;
+/* ── Bottom bar ── */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--blue);
+  color: #fff;
+  font-family: "Caveat", cursive;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 1rem;
+  z-index: 50;
   cursor: pointer;
-  transition:
-    background 0.25s,
-    color 0.25s;
+  transition: background 0.2s;
 }
-.btn-sketch-filled:hover {
-  background: transparent;
-  color: var(--ink);
+.bottom-bar:hover {
+  background: var(--blue-dark);
 }
 
 /* ── Nav dots ── */
 .nav-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  border: 1px solid var(--ink);
+  border: 1.5px solid var(--blue);
   background: transparent;
-  transition: background 0.3s;
   cursor: pointer;
-  opacity: 0.35;
+  transition: background 0.2s;
+  opacity: 0.5;
 }
 .nav-dot.active {
-  background: var(--ink);
+  background: var(--blue);
   opacity: 1;
+}
+
+/* ── Sketch input ── */
+.sketch-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid rgba(37, 99, 235, 0.35);
+  border-radius: 0;
+  padding: 0.6rem 0;
+  color: var(--ink);
+  font-family: "Caveat", cursive;
+  font-size: 1.2rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.25s;
+}
+.sketch-input:focus {
+  border-bottom-color: var(--blue);
+}
+.sketch-input::placeholder {
+  color: var(--blue);
+  opacity: 0.4;
+}
+
+/* ── Calendar ── */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  text-align: center;
+}
+.cal-day {
+  font-family: "Caveat", cursive;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  border-radius: 50%;
+  line-height: 1;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cal-day.today {
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+}
+.cal-day.header {
+  font-size: 0.7rem;
+  font-family: "Montserrat", sans-serif;
+  opacity: 0.5;
+  aspect-ratio: auto;
 }
 
 /* Scrollbar */
@@ -215,8 +250,8 @@
   width: 3px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--cream);
+  background: #fff;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(26, 23, 16, 0.2);
+  background: rgba(37, 99, 235, 0.2);
 }
