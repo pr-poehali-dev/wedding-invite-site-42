@@ -120,19 +120,16 @@ export default function Index() {
       {/* ════════════ 1. ГЛАВНАЯ ════════════ */}
       <section ref={(el) => { sectionRefs.current[0] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        {/* Сердечко сверху */}
-        <div className="animate-float" style={{ fontSize: "2rem", marginBottom: "1rem", position: "relative", zIndex: 1 }}>🖤</div>
-
         <div style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "0 2rem" }}>
           <h1 className="font-hand animate-fade-up delay-1"
             style={{ fontSize: "clamp(3.5rem, 14vw, 6rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.1, marginBottom: "0.5rem" }}>
-            Александр
+            Вадим
           </h1>
           <p className="font-hand animate-fade-up delay-2"
             style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--blue)", opacity: 0.6, marginBottom: "0.25rem" }}>+</p>
           <h1 className="font-hand animate-fade-up delay-3"
             style={{ fontSize: "clamp(3.5rem, 14vw, 6rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.1, marginBottom: "2rem" }}>
-            Мария
+            Евгения
           </h1>
 
           <p className="font-hand animate-fade-in delay-4"
@@ -153,7 +150,7 @@ export default function Index() {
       {/* ════════════ 2. ОБРАЩЕНИЕ ════════════ */}
       <section ref={(el) => { sectionRefs.current[1] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1 }}>
+        <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1, textAlign: "center" }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(2rem, 8vw, 2.8rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.2, marginBottom: "2rem" }}>
             Дорогие наши<br />друзья и родные!
           </h2>
@@ -163,46 +160,29 @@ export default function Index() {
           <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.15rem", color: "var(--blue)", lineHeight: 1.6 }}>
             Будем счастливы видеть вас на нашей свадьбе!
           </p>
-
-          {/* Маленькие сердечки */}
-          <div style={{ marginTop: "2rem", display: "flex", gap: "0.5rem" }}>
-            {["🖤", "🖤", "🖤"].map((h, i) => (
-              <span key={i} style={{ fontSize: "1.2rem", opacity: 0.35 + i * 0.2 }}>{h}</span>
-            ))}
-          </div>
         </div>
       </section>
 
       {/* ════════════ 3. МЕСТО ════════════ */}
       <section ref={(el) => { sectionRefs.current[2] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        {/* Сверху — гирлянда сердечек */}
-        <div style={{ textAlign: "center", paddingTop: "1.5rem", fontSize: "1.5rem", letterSpacing: "0.3rem", opacity: 0.7 }}>
-          🖤🖤🖤🖤🖤🖤🖤
-        </div>
-
-        <div style={{ padding: "2.5rem 2rem", position: "relative", zIndex: 1, flex: 1 }}>
+        <div style={{ padding: "2.5rem 2rem", position: "relative", zIndex: 1, flex: 1, textAlign: "center" }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "1.5rem" }}>
             Место проведения
           </h2>
           <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.2rem", color: "var(--blue)", lineHeight: 1.7, marginBottom: "2rem" }}>
-            г. Москва,<br />ул. Пречистенка, д. 12.
+            г. Красногорск,<br />ул. Железнодорожная, д. 38А.
           </p>
           <button className="btn-blue" style={{ fontSize: "1.1rem", padding: "0.65rem 1.8rem" }}>
             Как добраться
           </button>
-        </div>
-
-        {/* Гирлянда снова снизу */}
-        <div style={{ textAlign: "center", paddingBottom: "0.5rem", fontSize: "1.2rem", letterSpacing: "0.2rem", opacity: 0.5, position: "relative", zIndex: 1 }}>
-          🖤🖤🖤🖤🖤🖤🖤
         </div>
       </section>
 
       {/* ════════════ 4. ПРОГРАММА + ТАЙМЕР ════════════ */}
       <section ref={(el) => { sectionRefs.current[3] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1 }}>
+        <div style={{ padding: "3rem 2rem 2rem", position: "relative", zIndex: 1, textAlign: "center" }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "2rem" }}>
             Программа дня
           </h2>
@@ -274,7 +254,7 @@ export default function Index() {
       {/* ════════════ 6. АНКЕТА ГОСТЯ ════════════ */}
       <section ref={(el) => { sectionRefs.current[5] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, flex: 1 }}>
+        <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, flex: 1, textAlign: "center" }}>
           <h2 className="font-hand" style={{ fontSize: "clamp(1.8rem, 7vw, 2.5rem)", fontWeight: 600, color: "var(--blue)", marginBottom: "0.5rem" }}>
             Анкета гостя
           </h2>
@@ -286,31 +266,48 @@ export default function Index() {
           </p>
 
           {rsvpStep === "done" ? (
-            <div style={{ textAlign: "center", paddingTop: "2rem" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🖤</div>
+            <div style={{ paddingTop: "2rem" }}>
               <p className="font-hand" style={{ fontSize: "2rem", fontWeight: 600, color: "var(--blue)" }}>Спасибо!</p>
               <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.1rem", color: "var(--blue)", opacity: 0.7, marginTop: "0.5rem" }}>Мы вас ждём!</p>
             </div>
           ) : (
-            <form onSubmit={(e) => { e.preventDefault(); setRsvpStep("done"); }} style={{ display: "flex", flexDirection: "column", gap: "1.8rem" }}>
-              {[
-                { key: "name",     label: "Ваше имя",        placeholder: "Имя и фамилия" },
-                { key: "phone",    label: "Телефон",          placeholder: "+7 (___) ___-__-__" },
-                { key: "dietary",  label: "Особое меню",      placeholder: "Вегетарианское, аллергии…" },
-              ].map(({ key, label, placeholder }) => (
-                <div key={key}>
-                  <label style={{ display: "block", fontFamily: "Montserrat, sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--blue)", opacity: 0.5, marginBottom: "0.4rem" }}>
-                    {label}
-                  </label>
-                  <input
-                    className="sketch-input"
-                    placeholder={placeholder}
-                    value={formData[key as keyof typeof formData]}
-                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                    required={key === "name"}
-                  />
+            <form onSubmit={(e) => { e.preventDefault(); setRsvpStep("done"); }} style={{ display: "flex", flexDirection: "column", gap: "1.8rem", textAlign: "left" }}>
+              <div>
+                <label style={{ display: "block", fontFamily: "Montserrat, sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--blue)", opacity: 0.5, marginBottom: "0.4rem" }}>
+                  Ваше имя
+                </label>
+                <input className="sketch-input" placeholder="Имя и фамилия" value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+              </div>
+              <div>
+                <label style={{ display: "block", fontFamily: "Montserrat, sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--blue)", opacity: 0.5, marginBottom: "0.4rem" }}>
+                  Телефон
+                </label>
+                <input className="sketch-input" placeholder="+7 (___) ___-__-__" value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+              </div>
+              <div>
+                <label style={{ display: "block", fontFamily: "Montserrat, sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--blue)", opacity: 0.5, marginBottom: "0.75rem" }}>
+                  Предпочтения по алкоголю
+                </label>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                  {["Вино", "Шампанское", "Водка", "Пиво", "Не употребляю"].map((opt) => (
+                    <label key={opt} style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontFamily: "Caveat, cursive", fontSize: "1.15rem", color: "var(--blue)", cursor: "pointer" }}>
+                      <input
+                        type="checkbox"
+                        style={{ width: "18px", height: "18px", accentColor: "var(--blue)", cursor: "pointer" }}
+                        checked={formData.dietary.includes(opt)}
+                        onChange={(e) => {
+                          const current = formData.dietary ? formData.dietary.split(",").map(s => s.trim()).filter(Boolean) : [];
+                          const updated = e.target.checked ? [...current, opt] : current.filter(s => s !== opt);
+                          setFormData({ ...formData, dietary: updated.join(", ") });
+                        }}
+                      />
+                      {opt}
+                    </label>
+                  ))}
                 </div>
-              ))}
+              </div>
               <div style={{ paddingTop: "0.5rem" }}>
                 <button type="submit" className="btn-blue" style={{ width: "100%" }}>
                   Подтвердить
@@ -324,17 +321,12 @@ export default function Index() {
       {/* ════════════ 7. ДО ВСТРЕЧИ ════════════ */}
       <section ref={(el) => { sectionRefs.current[6] = el; }} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", overflow: "hidden", paddingBottom: "5rem", background: "#fff" }}>
 
-        {/* Гирлянда сверху */}
-        <div style={{ textAlign: "center", paddingTop: "1.5rem", fontSize: "1.4rem", letterSpacing: "0.2rem", opacity: 0.65 }}>
-          🖤🖤🖤🖤🖤🖤🖤
-        </div>
-
         <div style={{ padding: "3rem 2rem", position: "relative", zIndex: 1, textAlign: "center", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <p style={{ fontFamily: "Caveat, cursive", fontSize: "1.2rem", color: "var(--blue)", opacity: 0.7, marginBottom: "1rem" }}>
             До скорой встречи!<br />С любовью,
           </p>
           <h2 className="font-hand" style={{ fontSize: "clamp(3rem, 12vw, 5rem)", fontWeight: 700, color: "var(--blue)", lineHeight: 1.1 }}>
-            Александр<br />+<br />Мария
+            Вадим<br />+<br />Евгения
           </h2>
         </div>
 
