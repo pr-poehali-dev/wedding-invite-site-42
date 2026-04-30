@@ -1,9 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
-const COUPLE_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/6cb1cb89-5198-4189-820e-d15a7f18eeef.jpg";
+const COUPLE_IMG  = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/6cb1cb89-5198-4189-820e-d15a7f18eeef.jpg";
+const PARTY_IMG   = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/b5e184c4-0baa-4d86-936f-a432f8a017f0.png";
+const RING_IMG    = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/5d887b39-b022-4b60-a025-639c7c7b3645.jpg";
+const GLASSES_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/2b38fad7-7796-42aa-8ea9-8a7fda8a91cf.jpg";
+const CAR_IMG     = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/bucket/bd977c12-5a17-45e5-be9a-f3621093b9a8.jpg";
 const FLOWERS_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/a943f521-b3c3-4c22-97a1-c51206aca462.jpg";
-const DECO_IMG = "https://cdn.poehali.dev/projects/ab37d73f-1443-402c-bbab-13217f615402/files/084b148e-91cc-4610-8fb0-4a4f2e7c8767.jpg";
 
 const PLAYLIST = [
   { title: "Perfect", artist: "Ed Sheeran" },
@@ -113,8 +116,20 @@ export default function Index() {
       <section
         ref={(el) => { sectionRefs.current[0] = el; }}
         className="min-h-screen flex flex-col items-center justify-center relative"
-        style={{ paddingBottom: "4rem" }}
+        style={{ paddingBottom: "4rem", overflow: "hidden" }}
       >
+        {/* bg: тусовка слева снизу */}
+        <img src={PARTY_IMG} alt="" aria-hidden style={{
+          position: "absolute", left: "-4%", bottom: "6%",
+          width: "clamp(220px, 30vw, 420px)",
+          mixBlendMode: "multiply", opacity: 0.18, pointerEvents: "none", userSelect: "none",
+        }} />
+        {/* bg: машина справа снизу */}
+        <img src={CAR_IMG} alt="" aria-hidden style={{
+          position: "absolute", right: "-3%", bottom: "4%",
+          width: "clamp(180px, 24vw, 340px)",
+          mixBlendMode: "multiply", opacity: 0.16, pointerEvents: "none", userSelect: "none",
+        }} />
         <div className="animate-float" style={{ marginBottom: "2rem", width: "220px" }}>
           <img
             src={COUPLE_IMG}
@@ -194,9 +209,15 @@ export default function Index() {
       {/* ══════════════ ДЕТАЛИ ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[1] = el; }}
-        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)" }}
+        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", position: "relative", overflow: "hidden" }}
       >
-        <div style={{ maxWidth: "640px", margin: "0 auto" }}>
+        {/* bg: кольцо справа по центру */}
+        <img src={RING_IMG} alt="" aria-hidden style={{
+          position: "absolute", right: "-2%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(200px, 28vw, 400px)",
+          mixBlendMode: "multiply", opacity: 0.13, pointerEvents: "none", userSelect: "none",
+        }} />
+        <div style={{ maxWidth: "640px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <p style={{
             fontFamily: "Montserrat, sans-serif", fontWeight: 300,
             fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
@@ -254,9 +275,21 @@ export default function Index() {
       {/* ══════════════ RSVP ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[2] = el; }}
-        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)" }}
+        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)", position: "relative", overflow: "hidden" }}
       >
-        <div style={{ maxWidth: "480px", margin: "0 auto" }}>
+        {/* bg: бокалы слева сверху */}
+        <img src={GLASSES_IMG} alt="" aria-hidden style={{
+          position: "absolute", left: "-3%", top: "5%",
+          width: "clamp(160px, 22vw, 300px)",
+          mixBlendMode: "multiply", opacity: 0.14, pointerEvents: "none", userSelect: "none",
+        }} />
+        {/* bg: машина справа снизу */}
+        <img src={CAR_IMG} alt="" aria-hidden style={{
+          position: "absolute", right: "-2%", bottom: "5%",
+          width: "clamp(160px, 20vw, 280px)",
+          mixBlendMode: "multiply", opacity: 0.11, pointerEvents: "none", userSelect: "none",
+        }} />
+        <div style={{ maxWidth: "480px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <p style={{
             fontFamily: "Montserrat, sans-serif", fontWeight: 300,
             fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
@@ -403,9 +436,21 @@ export default function Index() {
       {/* ══════════════ ПОДАРКИ ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[3] = el; }}
-        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)" }}
+        style={{ padding: "8rem 1.5rem", borderTop: "1px solid rgba(26,23,16,0.1)", position: "relative", overflow: "hidden" }}
       >
-        <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
+        {/* bg: кольцо слева */}
+        <img src={RING_IMG} alt="" aria-hidden style={{
+          position: "absolute", left: "-2%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(180px, 24vw, 340px)",
+          mixBlendMode: "multiply", opacity: 0.12, pointerEvents: "none", userSelect: "none",
+        }} />
+        {/* bg: тусовка справа снизу */}
+        <img src={PARTY_IMG} alt="" aria-hidden style={{
+          position: "absolute", right: "-2%", bottom: "3%",
+          width: "clamp(160px, 20vw, 300px)",
+          mixBlendMode: "multiply", opacity: 0.1, pointerEvents: "none", userSelect: "none",
+        }} />
+        <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
           <p style={{
             fontFamily: "Montserrat, sans-serif", fontWeight: 300,
             fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
@@ -465,9 +510,21 @@ export default function Index() {
       {/* ══════════════ ПРОГРАММА ══════════════ */}
       <section
         ref={(el) => { sectionRefs.current[4] = el; }}
-        style={{ padding: "8rem 1.5rem 12rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)" }}
+        style={{ padding: "8rem 1.5rem 12rem", borderTop: "1px solid rgba(26,23,16,0.1)", background: "var(--cream-dark)", position: "relative", overflow: "hidden" }}
       >
-        <div style={{ maxWidth: "560px", margin: "0 auto" }}>
+        {/* bg: бокалы справа по центру */}
+        <img src={GLASSES_IMG} alt="" aria-hidden style={{
+          position: "absolute", right: "-3%", top: "50%", transform: "translateY(-50%)",
+          width: "clamp(180px, 24vw, 340px)",
+          mixBlendMode: "multiply", opacity: 0.13, pointerEvents: "none", userSelect: "none",
+        }} />
+        {/* bg: машина слева снизу */}
+        <img src={CAR_IMG} alt="" aria-hidden style={{
+          position: "absolute", left: "-2%", bottom: "8%",
+          width: "clamp(180px, 22vw, 320px)",
+          mixBlendMode: "multiply", opacity: 0.12, pointerEvents: "none", userSelect: "none",
+        }} />
+        <div style={{ maxWidth: "560px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <p style={{
             fontFamily: "Montserrat, sans-serif", fontWeight: 300,
             fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase",
